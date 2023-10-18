@@ -1,0 +1,195 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 26px;
+}
+
+i {
+    color: #000000;
+}
+
+.btnLaranja {
+    color: #f7941d !important;
+}
+
+.tituloCadastro {
+    font-size: 30px;
+}
+
+.logo img {
+    width: 190px;
+    height: 110px;
+}
+
+.fundo form {
+    display: grid;
+    justify-content: center;
+}
+
+/* NAVEBAR */
+.bgNavegacao {
+    background-color: #004a8d;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+.extencao {
+    box-shadow: 0px 0px 5px black;
+}
+
+.linkextencao {
+    color: #f7941d;
+}
+
+/* FILTRO */
+.filtro {
+    box-shadow: 0px 0px 3px black;
+    border: 1px solid #000000;
+}
+
+/* CONTEUDO */
+.table {
+    box-shadow: 0px 0px 5px #ccc;
+    font-size: 16px;
+    border: solid 2px #ccc !important;
+    width: 1010px;
+    margin: 0 auto;
+}
+
+.table > thead {
+    border-top: 2px solid #ccc;
+}
+
+.table thead th {
+    border-bottom: 5px solid #004a8d;
+}
+
+.table tbody td {
+    border-bottom: 5px solid #004a8d;
+}
+
+.principal {
+    min-height: 400px;
+    margin-bottom: 80px !important;
+    margin-top: 80px !important;
+}
+
+.principalHome {
+    min-height: 400px;
+    margin-bottom: 80px !important;
+}
+
+.centro {
+    margin-top: 35px;
+}
+
+/* RODAPÉ */
+.rodape {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #004a8d;
+    color: white;
+    font-size: 12px;
+    line-height: 80px;
+}
+
+@media (min-width: 768px) {
+    .fixacao {
+        position: fixed;
+        bottom: 0;
+    }
+}
+
+@media (min-width: 1200px) {
+    a.linkmenu:link, a.linkmenu:visited {
+        color: white !important;
+        border-radius: 10px;
+    }
+    
+    a.linkmenu:hover, a.linkmenu:active {
+        color: #f7941d  !important;
+    }
+}
+
+/* CADASTRO */
+.cadastro {
+    font-size: 16px;
+}
+
+.botaoLaranja {
+    background-color: #f7941d !important;
+    color: white;
+}
+
+.botaoCinza {
+    border: 1px solid black;
+}
+
+button.botaoLaranja:hover, button.botaoLaranja:active {
+    box-shadow: 0px 0px 5px black;
+    color: white;
+}
+
+button.botaoCinza:hover, button.botaoCinza:active {
+    box-shadow: 0px 0px 5px black;
+}
+
+/* classe para alteração de fontes */
+.fs-18 {
+    font-size: 18px;
+}
+
+/* RESERVA */
+.semana {
+    font-size: 14px;
+}
+
+/* TURMA DIAS */
+.form-check {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 0;
+}
+
+input[type="date"]:invalid::-webkit-datetime-edit{
+    color: transparent;
+}
+input[type="date"]:focus::-webkit-datetime-edit{
+    color: black !important;
+    height: 37px;
+}
+
+.edicao {
+    border-radius: 5px;
+    border: 1px solid;
+    height: 37px;
+}
+
+/* LOGIN */
+.bodylogin {
+    display: flex;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background: url(../imagens/Fundo.jpg) center no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+    backdrop-filter: blur(5px); /* Sinaliza para deixar o fundo do body com o blur */
+  }
+
+  .editEsp {
+    margin-top: 25px;
+    float: right;
+    padding: 2px 15px;
+    box-shadow: 0px 0px 5px black;
+}
