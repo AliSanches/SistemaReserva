@@ -2,20 +2,36 @@
 
     require_once('./conexao/conecta.php');
 
-    $sqlselect = "SELECT * FROM curso INNER JOIN tipo_curso ON curso.id_tipo_curso = tipo_curso.id_tipo_curso";
+    $sqlselect = "SELECT * FROM tipo_curso";
     $resultadoselect = mysqli_query($conexao, $sqlselect);
-    $exibirResult = mysqli_fetch_assoc($resultadoselect);
+    $linhaselect = mysqli_fetch_assoc($resultadoselect);
 
-    if($_SERVER["REQUEST_METHOD"] === $_POST ) {
-        //COLETA DADOS DO FORMULARIO
-        $nome = mysqli_real_escape_string($conexao, $_POST['nome_curso']);
-        $tipo = mysqli_real_escape_string($conexao, $_POST['id_tipo_curso']);
 
-        //INSERIR AS INFORMACOES NO BANCO
-        $sqlInserir = "UPDATE curso SET nome_curso = '$nome' WHERE $tipo";
+    if(isset($_GET['id_curso']) && $_GET['id_curso'] != ''){
 
-        //EXIBIR AS INFORMACOES
-        $resultAlter = mysqli_query($conexao, $sqlInserir);
+        $id = $_GET['id_curso'];
+    
+        $sql = "SELECT * FROM curso WHERE id_curso = $id";
+        $resultado = mysqli_query($conexao, $sql);
+        $exibir = mysqli_fetch_assoc($resultado);
+      }
+
+    if(isset($_POST['altera']) && $_POST['altera'] === 'curso_altera'){
+
+        $id = $_POST['id_curso'];
+
+        $nome_curso = mysqli_real_escape_string($conexao, $_POST['nome_curso']);
+        $tipo_curso = mysqli_real_escape_string($conexao, $_POST['id_tipo_curso']);
+
+        $sql = "UPDATE curso SET nome_curso = '$nome_curso' , id_tipo_curso = '$tipo_curso' WHERE id_curso = $id";
+
+        if(mysqli_query($conexao, $sql)){
+            header('Location:curso.php');
+        }
+        else{
+         die("Erro:". $sql . "<br>" . mysqli_error($conexao));
+
+        }
     }
 ?>
 
@@ -99,21 +115,23 @@
             <form method="POST">
                 <div class="fs-18">
                     <div class="col-12 col-md-4 m-auto">
-                        <label for="nome">Nome do curso</label>
-                        <input type="text" class="form-control mb-3 curso" id="nome" value="<?=$exibirResult['nome_curso']?>" name="nome">
+                        <label for="nomeCurso_altera">Nome do curso</label>
+                        <input type="text" class="form-control mb-3 curso" id="nome" value="<?php echo $exibir['nome_curso']?>" name="nome_curso">
                     </div>
 
                     <div class="col-12 col-md-4 m-auto">
                         <label for="tipo">Tipo do curso</label>
-                        <select id="tipo" name="tipo" class="form-select">s
-                            <option value="<?= $exibirResult['id_tipo_curso']?>"><?= $exibirResult['nome_tipo']?></option>
+                        <select id="tipo" name="tipo" class="form-select">
+                        <?php foreach($resultadoselect as $exibir):?>
+                            <option value="<?= $exibir['id_tipo_curso']?>"><?= $exibir['nome_tipo']?></option>
+                        <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mt-5">
                     <!-- Botão para acionar modal -->
-                    <input type="hidden" values="enviar">
+                    <input type="hidden" name="altera" value="curso_altera">
                     <button type="submit" class="btn botaoLaranja btn-lg mr-5">
                     Editar
                     </button>

@@ -12,8 +12,8 @@
         $tipo = mysqli_real_escape_string($conexao, $_POST['tipo']);
 
         //SQL PARA INSERIR NO BANCO
-        $sqlInserirCurso = "INSERT INTO curso (nome_curso, id_tipo_curso) VALUES ('$nome', $tipo)";
-        echo $sqlInserirCurso;
+        $sqlInserirCurso = "INSERT INTO curso (nome_curso, id_tipo_curso) VALUES ('$nome',$tipo)";
+
         //EXIBE O RETORNO DAS SQL'S ENVIADAS
         $resultCurso = mysqli_query($conexao, $sqlInserirCurso);
 
@@ -109,8 +109,7 @@
                         <label for=tipo>Tipo do curso</label>
                         <select class="form-select" name="tipo" id="tipo" required>
                             <?php foreach ($resultadotipo as $exibir): ?>
-                                <!-- value é o valor que é enviado para o servidor -->
-                            <option value="<?=$exibir['id_tipo_curso']?>"><?= $exibir['nome_tipo'] ?></option>
+                            <option value="<?= $exibir['id_tipo_curso'] ?>"><?= $exibir['nome_tipo'] ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -118,7 +117,6 @@
 
                 <div class="d-flex justify-content-center mt-5">
                     <!-- Botão para acionar modal -->
-                    
                     <input type="hidden" value="Enviar">
                     <button type="submit" class="btn btn-lg botaoLaranja mr-5" data-toggle="modal" data-target="#ModalCurso">
                         Cadastrar
