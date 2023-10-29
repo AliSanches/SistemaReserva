@@ -129,7 +129,7 @@
                 </div>
 
                 <div class="d-flex justify-content-center mt-5">
-                <input type="hidden" name="id_curso" value="<?php echo $id ?>">
+                <input type="hidden" name="id_curso" value="<?= $linha['id_curso']?>">
                 <button type="submit" name="exclui" value="sim" class="btn btn-lg botaoLaranja mr-5">
                     Excluir
                 </button>
