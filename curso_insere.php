@@ -12,11 +12,15 @@
         $tipo = mysqli_real_escape_string($conexao, $_POST['tipo']);
 
         //SQL PARA INSERIR NO BANCO
-        $sqlInserirCurso = "INSERT INTO curso (nome_curso, id_tipo_curso) VALUES ('$nome',$tipo)";
+        $sqlInserirCurso = "INSERT INTO curso (nome_curso, id_tipo_curso) VALUES ('$nome', $tipo)";
 
-        //EXIBE O RETORNO DAS SQL'S ENVIADAS
-        $resultCurso = mysqli_query($conexao, $sqlInserirCurso);
-
+        //EXIBE O RETORNO DAS SQL'S ENVIADAS JUNTAMENTE COM UMA VERIFICACAO
+        if(mysqli_query($conexao, $sqlInserirCurso)) {
+            header('Location:curso.php');
+        }
+        else {
+            die("Erro: " . $sqlInserirCurso . "<br>" . mysqli_error($conexao));
+        }
     }
 
 ?>
@@ -109,7 +113,8 @@
                         <label for=tipo>Tipo do curso</label>
                         <select class="form-select" name="tipo" id="tipo" required>
                             <?php foreach ($resultadotipo as $exibir): ?>
-                            <option value="<?= $exibir['id_tipo_curso'] ?>"><?= $exibir['nome_tipo'] ?></option>
+                                <!-- value é o valor que é enviado para o servidor -->
+                            <option value="<?=$exibir['id_tipo_curso']?>"><?= $exibir['nome_tipo'] ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

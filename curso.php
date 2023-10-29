@@ -1,26 +1,29 @@
 <?php 
 $pag = 1;
 
-//INICIO -- VERIFICACAO DE PAGINA
-if(isset($_GET['pag'])) 
+  //INICIO -- VERIFICACAO DE PAGINA
+  if(isset($_GET['pag'])) 
   $pag = filter_input(INPUT_GET, "pag", FILTER_VALIDATE_INT);
-if(!$pag)
+  if(!$pag)
   $pag = 1;
-//FINAL -- VERIFICACAO DE PAGINA
+  //FINAL -- VERIFICACAO DE PAGINA
 
-$pagLimite = 4;
-$pagInicial = ($pag * $pagLimite) - $pagLimite;
+  $pagLimite = 4;
+  $pagInicial = ($pag * $pagLimite) - $pagLimite;
 
-//INICIO -- CONSULTA PARA BUSCAR INFORMACOES 
-$pdo = new PDO("mysql:host=localhost;dbname=projeto;charset=utf8", "root", "");
-$sql = $pdo->query("SELECT * FROM curso INNER JOIN tipo_curso ON curso.id_tipo_curso = tipo_curso.id_tipo_curso ORDER BY curso.nome_curso LIMIT $pagInicial, $pagLimite");
-//NUMEROS DE REGISTROS DENTRO DA TABELA
-$contagemRegistros = $pdo->query("SELECT COUNT(id_curso) count FROM curso")->fetch()['count'];
-//CEIL CONVERTE SEMPRE PARA UM VALOR INTEIRO | QUANTIDADE TOTAL DE PAGINAS QUE POSSUO
-$qtdPaginas = ceil($contagemRegistros / $pagLimite);
-//PDO::fetch_assoc diz ao PDO para retornar os resultados como uma matriz associativa
-$resultados = $sql->fetchAll(PDO::FETCH_ASSOC);
-//FINAL -- CONSULTA PARA BUSCAR INFORMACOES 
+  //INICIO -- CONSULTA PARA BUSCAR INFORMACOES 
+  $pdo = new PDO("mysql:host=localhost;dbname=projeto;charset=utf8", "root", "");
+  $sql = $pdo->query("SELECT * FROM curso INNER JOIN tipo_curso ON curso.id_tipo_curso = tipo_curso.id_tipo_curso ORDER BY curso.nome_curso LIMIT $pagInicial, $pagLimite");
+
+  //NUMEROS DE REGISTROS DENTRO DA TABELA
+  $contagemRegistros = $pdo->query("SELECT COUNT(id_curso) count FROM curso")->fetch()['count'];
+  
+  //CEIL CONVERTE SEMPRE PARA UM VALOR INTEIRO | QUANTIDADE TOTAL DE PAGINAS QUE POSSUO
+  $qtdPaginas = ceil($contagemRegistros / $pagLimite);
+
+  //PDO::fetch_assoc diz ao PDO para retornar os resultados como uma matriz associativa
+  $resultados = $sql->fetchAll(PDO::FETCH_ASSOC);
+  //FINAL -- CONSULTA PARA BUSCAR INFORMACOES 
 
   //ATUALIZAR COM TODAS AS INFORMACOES
   $conAll = $pdo->query("SELECT * FROM curso INNER JOIN tipo_curso ON curso.id_tipo_curso = tipo_curso.id_tipo_curso ORDER BY curso.nome_curso");

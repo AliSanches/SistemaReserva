@@ -6,7 +6,7 @@
     $resultadotipo = mysqli_query($conexao, $sqltipo);
     $linhatipo = mysqli_fetch_assoc($resultadotipo);
 
-
+    //RECUPERAR INFORMACOES
     if(isset($_GET['id_curso']) && $_GET['id_curso'] != ''){
 
         $id = $_GET['id_curso'];
@@ -16,19 +16,17 @@
         $linha = mysqli_fetch_assoc($resultado);
       }
 
-    if(isset($_POST['excluir']) && $_POST['excluir'] === 'sim'){
+    //COD PARA ENVIAR INFORMACOES
+    if (isset($_POST['exclui']) && $_POST['exclui'] === 'sim') {
+
         $id = $_POST['id_curso'];
 
-        $status = false;
-
-        $sql = "UPDATE curso SET status = '$status' WHERE id_curso = $id ";
-
-        if(mysqli_query($conexao, $sql)){
-            header('Location:curso.php');
-        }
-        else{
-         die("Erro:". $sql . "<br>" . mysqli_error($conexao));
-
+        $sql = "DELETE FROM curso WHERE id_curso=$id";
+    
+        if (mysqli_query($conexao, $sql)) {
+            header('Location: curso.php');
+        } else {
+            die("Erro: " . $sql . "<br>" . mysqli_error($conexao));
         }
     }
 
@@ -120,17 +118,21 @@
 
                     <div class="col-12 col-md-4 m-auto">
                         <label name="tipo_curso" id="tipo_curso">Tipo do curso</label>
-                        <input type="text" class="form-control mb-3" readonly>
+                        <select name="tipo" id="tipo_curso" class="form-select" disabled>
+                        <?php do { ?>
+
+                            <option value="<?php echo $linhatipo['id_tipo_curso']?>" <?php if($linhatipo['id_tipo_curso'] == $linha['id_tipo_curso'] ) echo "selected" ?>><?php echo $linhatipo['nome_tipo'] ?></option>
+
+                        <?php } while($linhatipo = mysqli_fetch_assoc($resultadotipo)) ?>
                         </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mt-5">
-                    <!-- Botão para acionar modal -->
-                    <input type="hidden" name="id_curso" value="<?php echo $id ?>">
-                    <button type="submit" name="excluir" value="sim" class="btn btn-lg botaoLaranja mr-5">
-                        Excluir
-                    </button>
+                <input type="hidden" name="id_curso" value="<?php echo $id ?>">
+                <button type="submit" name="exclui" value="sim" class="btn btn-lg botaoLaranja mr-5">
+                    Excluir
+                </button>
 
                     <!-- Botão para voltar a home -->
                     <a class="btn btn-lg botaoCinza" href="curso.php">Voltar</a>

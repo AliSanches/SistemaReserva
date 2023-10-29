@@ -30,7 +30,6 @@
         }
         else{
          die("Erro:". $sql . "<br>" . mysqli_error($conexao));
-
         }
     }
 ?>
@@ -120,11 +119,14 @@
                     </div>
 
                     <div class="col-12 col-md-4 m-auto">
-                        <label for="tipo">Tipo do curso</label>
-                        <select id="tipo" name="tipo" class="form-select">
-                        <?php foreach($resultadoselect as $exibir):?>
-                            <option value="<?= $exibir['id_tipo_curso']?>"><?= $exibir['nome_tipo']?></option>
-                        <?php endforeach; ?>
+                        <label for="tipoCurso_altera">Tipo do curso</label>
+                        <select id="tipo" name="id_tipo_curso" class="form-select">
+                            <option selected>Selecione</option>
+                            <?php do { ?>
+
+                            <option value="<?php echo $linhaselect['id_tipo_curso']?>" <?php if($linhaselect['id_tipo_curso'] == $exibir['id_tipo_curso'] ) echo "selected" ?>><?php echo $linhaselect['nome_tipo'] ?></option>
+
+                            <?php } while($linhaselect = mysqli_fetch_assoc($resultadoselect)) ?>
                         </select>
                     </div>
                 </div>
@@ -132,6 +134,7 @@
                 <div class="d-flex justify-content-center mt-5">
                     <!-- Botão para acionar modal -->
                     <input type="hidden" name="altera" value="curso_altera">
+                    <input type="hidden" name="id_curso" value="<?= $exibir['id_curso']?>">
                     <button type="submit" class="btn botaoLaranja btn-lg mr-5">
                     Editar
                     </button>
