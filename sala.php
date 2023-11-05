@@ -2,36 +2,30 @@
 
     require_once('./conexao/conecta.php');
 
-    $sql = "SELECT id_sala FROM sala";
-    $resultado = mysqli_query($conexao, $sql);
-    $linha = mysqli_fetch_assoc($resultado);
-    $quantidade = mysqli_num_rows($resultado);
-  
-    //ROTINA DE PAGINAÇÃO
-    if(isset($_GET['pagina']) && !empty($_GET['pagina'])){
-      $paginaatual = $_GET['pagina'];
-    }else{
-      $paginaatual = 1;
-    }
+    $sqlSala = "SELECT id_sala, num_sala FROM sala";
+    $resultadoSala = mysqli_query($conexao, $sqlSala);
+    $exibeSala = mysqli_fetch_assoc($resultadoSala);
 
-    $url = "?pagina=";
+    // Qtde de itens por pagina
+    $itensPorPagina = 4;
 
-    //QUANTIDADE DE REGISTROS EXIBIDOS POR PÁGINA
-    $paginaqtdd = 5;
+    // Verificação para paginaAtual
+    $paginaAtual = isset($_GET['pag']) ? $_GET['PAG'] : 1;
 
-    //VALOR INICIAL PARA A CLÁUSULA LIMIT
-    $valorinicial = ($paginaatual * $paginaqtdd) - $paginaqtdd;
-    $paginafinal = ceil($quantidade/$paginaqtdd);
-    $paginainicial = 1;
-    $paginaproxima = $paginaatual + 1;
-    $paginaanterior = $paginaatual - 1;
-
-    $status = true;
+    $indicePag = ($paginaAtual - 1) * $itensPorPagina;
 
     //SQL PARA TRAZER AS NOTÍCIAS GERAIS
-    $sqlpag = "SELECT sala.id_sala, sala.armario , sala.num_sala, sala.capacidade, sala.armario, sala.comport_notebook, sala.status, tipo_sala.nome_sala FROM sala INNER JOIN tipo_sala ON sala.id_tipo_sala = tipo_sala.id_tipo_sala WHERE sala.status = $status LIMIT $valorinicial, $paginaqtdd";
-    $resultadopag = mysqli_query($conexao, $sqlpag);
-    $linhapag = mysqli_fetch_assoc($resultadopag);
+    $sqlPag = "SELECT sala.num_sala, sala.capacidade, sala.comport_notebook, tipo_sala.nome_sala FROM sala INNER JOIN tipo_sala ON sala.id_tipo_sala = tipo_sala.id_tipo_sala LIMIT $indicePag, $itensPorPagina";
+    $resultadoPag = mysqli_query($conexao, $sqlPag);
+    $exibePag = mysqli_fetch_assoc($resultadoPag);
+
+    // Consultas para pesquisa
+    $sqlPesquisa = "SELECT tipo_curso.nome_tipo FROM tipo_curso";
+    $resultPesquisa = mysqli_query($conexao, $sqlPesquisa);
+    $exibePesquisa = mysqli_fetch_assoc($resultPesquisa);
+
+    // Contar o número total de registros
+    $totalRegistros = $conexao->query("SELECT COUNT(*) AS total FROM sala")->fetch_assoc()['total'];
 
 ?>
 <!doctype html>
@@ -114,22 +108,34 @@
 
     <div class="col-lg-3 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
-        <option selected>Escolher...</option>
-        <option>...</option>
+        <option selected>Tipo do Curso</option>
+        <?php foreach($resultPesquisa as $exibir):?>
+        <option>
+          <?=$exibir['nome_tipo']?>
+        </option>
+        <?php endforeach;?>
       </select>
     </div>
               
     <div class="col-lg-3 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
-        <option selected>Escolher...</option>
-        <option>...</option>
+        <option selected>Capacidade</option>
+        <?php foreach($resultadoPag as $exibir):?>
+        <option>
+          <?=$exibir['capacidade']?>
+        </option>
+        <?php endforeach;?>
       </select>
     </div>
               
     <div class="col-lg-3 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
-        <option selected>Escolher...</option>
-        <option>...</option>
+        <option selected>Número da Sala</option>
+        <?php foreach($resultadoSala as $exibir):?>
+        <option>
+        <?=$exibir['num_sala']?>
+        </option>
+        <?php endforeach;?>
       </select>
     </div>
               
@@ -146,7 +152,6 @@
 
   
 <!-- COMEÇO CONTEUDO -->
-<?php if($quantidade > 0) {?>
 <section class="principal container">
   <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
@@ -160,55 +165,48 @@
       </tr>
     </thead>
       <tbody>
-        <?php do { ?>
           <tr>
-            <td><?php echo $linhapag['nome_sala'] ?></td>
-            <td><?php echo $linhapag['num_sala'] ?></td>
-            <td><?php echo $linhapag['capacidade'] ?></td>
-            <td><?php echo $linhapag['armario'] ?></td>
-            <td><?php echo $linhapag['comport_notebook'] ?></td>
-            <td><a class="btnLaranja" href="sala_altera.php?id_sala=<?php echo $linhapag['id_sala'] ?>">Editar</a></td>
-            <td><a class="btnLaranja" href="sala_exclui.php?id_sala=<?php echo $linhapag['id_sala'] ?>">Excluir</a></td>
+            <td><?php echo $exibePag['nome_sala'] ?></td>
+            <td><?php echo $exibePag['num_sala'] ?></td>
+            <td><?php echo $exibePag['capacidade'] ?></td>
+            <td><?php echo $exibePag['armario'] ?></td>
+            <td><?php echo $exibePag['comport_notebook'] ?></td>
+            <td><a class="btnLaranja" href="sala_altera.php?id_sala=<?php echo $exibePag['id_sala'] ?>">Editar</a></td>
+            <td><a class="btnLaranja" href="sala_exclui.php?id_sala=<?php echo $exibePag['id_sala'] ?>">Excluir</a></td>
           </tr>
-        <?php } while($linhapag = mysqli_fetch_assoc($resultadopag))  ?>
       </tbody>
   </table>
-
-        <!-- PAGINAÇÃO -->
-        <nav aria-label="paginacao">
-            <ul class="pagination justify-content-center">
-              <?php if($paginaatual != $paginainicial) { ?>
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginainicial?>">Início</a>
-                </li>
-              <?php } ?>
-
-              <?php if($paginaatual >= 2) { ?>
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginaanterior?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-              <?php } ?>
-
-              <?php if($paginaatual != $paginafinal) { ?>
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginaproxima?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginafinal?>">Final</a>
-                </li>
-              <?php } ?>
-            </ul>
-          </nav>
-          <?php }  ?>
-
-
-  <!-- FINAL CONTEUDO -->
 </section>
+
+  <!-- PAGINAÇÃO -->
+  <section class="navegacao mt-3">
+    <nav aria-label="Navegação de paginas">
+      <ul class="pagination d-flex justify-content-center">
+        <li class="page-item">
+          <?php if($indiceInicio>1):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual-1?>" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+            <?php endif;?>  
+            <span class="sr-only">Anterior</span>
+          </a>
+
+        </li>
+
+        <li class="page-item"><a class="page-link" href="#"><?=$paginaAtual?></a></li>
+
+        <li class="page-item">
+          <?php if($indiceInicio<$itensPorPagina):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual+1?>" aria-label="Próximo">
+            <span aria-hidden="true">&raquo;</span>
+            <?php endif;?>
+            <span class="sr-only">Próximo</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </section>
+  <!-- FINAL PAGINAÇÃO -->
+  <!-- FINAL CONTEUDO -->
 
   <!-- COMEÇO RODAPÉ -->
   <footer class="rodape fixacao">

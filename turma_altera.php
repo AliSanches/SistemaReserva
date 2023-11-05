@@ -2,20 +2,19 @@
 
     require_once('./conexao/conecta.php');
 
-    $sqlcurso = "SELECT nome_curso FROM curso";
-    $resultadocurso = mysqli_query($conexao, $sqlcurso);
-    $linhacurso = mysqli_fetch_assoc($resultadocurso);
+    $sqlCurso = "SELECT nome_curso, id_curso FROM curso";
+    $resultadoCurso = mysqli_query($conexao, $sqlCurso);
+    $exibirCurso = mysqli_fetch_assoc($resultadoCurso);
 
-        // RECEBENDO INFORMACOES DA TURMA
-        if(isset($_GET['id_turma']) && $_GET['id_turma'] != '') {
+    // RECEBENDO INFORMACOES DA TURMA
+    if(isset($_GET['id_turma']) && $_GET['id_turma'] != '') {
 
-            $id = $_GET['id_turma'];
+    $id = $_GET['id_turma'];
         
-            $sql = "SELECT * FROM turma WHERE id_turma = $id";
-            $resultado = mysqli_query($conexao, $sql);
-            $linha = mysqli_fetch_assoc($resultado);
-        
-        }
+    $sql = "SELECT * FROM turma WHERE id_turma = $id";
+    $resultado = mysqli_query($conexao, $sql);
+    $exibir = mysqli_fetch_assoc($resultado);
+    }
 
     // SQL PARA ALTERAR INFORMAÇÃO
     if(isset($_POST['alterar']) && $_POST['alterar'] === 'altera_turma') {
@@ -36,10 +35,10 @@
         $sexta = $_POST['sexta'];
         $sabado = $_POST['sabado'];
     
-        $sql = "UPDATE turma SET nome_turma = '$nomeTurma', codigo_Oferta = '$codigoOferta', data_inicio = '$dataInicio', data_termino = '$dataTermino', horario_inicio = '$horarioInicio', horario_termino = '$horarioTermino', ano = date('Y'), segunda = '$segunda', terca = '$terca', quarta = '$quarta', quinta = '$quinta', sexta = '$sexta', sabado = '$sabado' WHERE id_turma = $id";
+        $sql = "UPDATE turma SET nome_turma = '$nomeTurma', codigo_Oferta = '$codigoOferta', data_inicio = '$dataInicio', data_termino = '$dataTermino', horario_inicio = '$horarioInicio', horario_termino = '$horarioTermino', ano = $ano, segunda = '$segunda', terca = '$terca', quarta = '$quarta', quinta = '$quinta', sexta = '$sexta', sabado = '$sabado' WHERE id_turma = '$id'";
     
         if(mysqli_query($conexao, $sql)) {
-          header('Location:editar.php');
+            header('Location:turma.php');
         }
         else {
             die("Erro: " . $sql . "<br>" . mysqli_error($conexao));
@@ -129,22 +128,21 @@
                     <div class="form-group col-md-4">
                             <label for="curso_insere">Curso</label>
                             <select id="curso_insere" class="form-select">
-                                <option selected>Escolher...</option>
                                 <?php do { ?>
-
-                                <option value="<?php echo $linhacurso['id_curso'] ?>" <?php if($linhacurso['id_curso'] == $linha['id_curso']) echo "selected" ?>><?php echo $linhacurso['nome_curso'] ?></option>
-
-                                <?php } while($linhacurso = mysqli_fetch_assoc($resultadocurso))  ?>
+                                    <option value="<?= $exibirCurso['id_curso'] ?>"<?php if ($exibirCurso['id_curso'] == $exibir['id_curso']) echo "selected"; ?>>
+                                <?=$exibirCurso['nome_curso'] ?>
+                                    </option>
+                                <?php } while ($exibirCurso = mysqli_fetch_assoc($resultadoCurso)); ?>
                             </select>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="nomeTurma_insere">Nome da Turma</label>
-                        <input type="text" class="form-control" id="nome_turma" name="nome_turma" value="<?php echo $linha['nome_turma'] ?>">
+                        <input type="text" class="form-control" id="nome_turma" name="nome_turma" value="<?php echo $exibir['nome_turma'] ?>">
                     </div>
                     
                     <div class="form-group col-md-3">
                         <label for="codOferta_insere">Código Oferta</label>
-                        <input type="text" class="form-control" id="codigo_Oferta" name="codigo_Oferta" value="<?php echo $linha['codigo_Oferta'] ?>">
+                        <input type="text" class="form-control" id="codigo_Oferta" name="codigo_Oferta" value="<?php echo $exibir['codigo_Oferta'] ?>">
                     </div>
                 </div>
 
@@ -153,99 +151,75 @@
                         <label class=" small " for="disabledFieldsetCheck">
                             Segunda-Feira
                         </label>
-                        <input type="checkbox" id="segunda-feira" name="segunda" value="1" <?php if($linha['segunda'] === '1') echo "checked" ?>>
+                        <input type="checkbox" id="segunda-feira" name="segunda" value="1" <?php if($exibir['segunda'] === '1') echo "checked" ?>>
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Terça-Feira
                         </label>
-                        <input type="checkbox" id="segunda-feira" name="terca" value="1" <?php if($linha['terca'] === '1') echo "checked" ?>>
+                        <input type="checkbox" id="segunda-feira" name="terca" value="1" <?php if($exibir['terca'] === '1') echo "checked" ?>>
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Quarta-Feira
                         </label>
-                        <input type="checkbox" id="segunda-feira" name="quarta" value="1" <?php if($linha['quarta'] === '1') echo "checked" ?>>
+                        <input type="checkbox" id="segunda-feira" name="quarta" value="1" <?php if($exibir['quarta'] === '1') echo "checked" ?>>
                     </div>
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Quinta-Feira
                         </label>
-                        <input type="checkbox" id="segunda-feira" name="quinta" value="1" <?php if($linha['quinta'] === '1') echo "checked" ?>>
+                        <input type="checkbox" id="segunda-feira" name="quinta" value="1" <?php if($exibir['quinta'] === '1') echo "checked" ?>>
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Sexta-Feira
                         </label>
-                        <input type="checkbox" id="segunda-feira" name="sexta" value="1" <?php if($linha['sexta'] === '1') echo "checked" ?>>
+                        <input type="checkbox" id="segunda-feira" name="sexta" value="1" <?php if($exibir['sexta'] === '1') echo "checked" ?>>
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Sábado
                         </label>
-                        <input type="checkbox" id="segunda-feira" name="sabado" value="1" <?php if($linha['sabado'] === '1') echo "checked" ?>>
+                        <input type="checkbox" id="segunda-feira" name="sabado" value="1" <?php if($exibir['sabado'] === '1') echo "checked" ?>>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-6">
                         <label for="dataInicio_insere" class="d-flex">Data Início</label>
-                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="<?php echo $linha['data_inicio'] ?>">
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="<?php echo $exibir['data_inicio'] ?>">
                     </div>
 
                     <div class="col-6">
                         <label for="hora_inicio" class="d-flex mt-0">Hora Início</label>
-                        <input type="time" class="mt-0 centro form-control" id="horario_inicio" name="horario_inicio" value="<?php echo $linha['horario_inicio'] ?>">
+                        <input type="time" class="mt-0 centro form-control" id="horario_inicio" name="horario_inicio" value="<?php echo $exibir['horario_inicio'] ?>">
                     </div>
 
                     <div class="col-6 mt-3">
                         <label for="data_termino" class="d-flex">Data Término</label>
-                        <input type="date" class="form-control" id="data_termino" name="data_termino" value="<?php echo $linha['data_termino'] ?>">
+                        <input type="date" class="form-control" id="data_termino" name="data_termino" value="<?php echo $exibir['data_termino'] ?>">
                     </div>
 
                     <div class="col-6">
                         <label for="hora_termino" class="d-flex mt-3">Hora Término</label>
-                        <input type="time" class="mt-2 centro form-control" id="horario_termino" name="horario_termino" value="<?php echo $linha['horario_termino'] ?>">
+                        <input type="time" class="mt-2 centro form-control" id="horario_termino" name="horario_termino" value="<?php echo $exibir['horario_termino'] ?>">
                     </div>
                 </div>
                
                 <div class="d-flex justify-content-center mt-5 mb-3">
-                     <!-- Botão para acionar modal -->
-                     <button type="button" class="btn botaoLaranja btn-lg mr-5" data-toggle="modal" data-target="#Modalturma">
+                    <input type="hidden" name="id_turma" value="<?=$exibir['id_turma']?>">
+                    <button type="submit" name="alterar" value="altera_turma" class="btn botaoLaranja btn-lg mr-5">
                         Editar
                     </button>
 
                     <!-- Botão para voltar a home -->
                     <a href="turma.php" class="btn botaoCinza btn-lg">Voltar</a>
 
-                    <!-- Modal -->
-                    <div class="modal fade" id="Modalturma" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="TituloModalCentralizado"> 
-                                        <i class="fa-regular fa-circle-check"></i>
-                                        Editar
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body my-5 text-center">
-                                    Edição concluida com sucesso
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-                                    <button type="submit" class="btn botaoLaranja px-5" data-dismiss="modal">OK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </form>
         </div>

@@ -2,36 +2,27 @@
 
   require_once('./conexao/conecta.php');
 
-  $sql = "SELECT id_turma FROM turma";
-  $resultado = mysqli_query($conexao, $sql);
-  $linha = mysqli_fetch_assoc($resultado);
-  $quantidade = mysqli_num_rows($resultado);
+  //Numero itens por página
+  $itensPorPagina = 4;
 
-  //ROTINA DE PAGINAÇÃO
-  if(isset($_GET['pagina']) && !empty($_GET['pagina'])){
-    $paginaatual = $_GET['pagina'];
-  }else{
-    $paginaatual = 1;
-  }
+  //Pagina atual
+  $paginaAtual = isset($_GET['pag']) ? $_GET['pag'] : 1;
 
-  $url = "?pagina=";
+  //Calcular o indice de inicio dos itens a serem exibidos na pagina atual
+  $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
-  //QUANTIDADE DE REGISTROS EXIBIDOS POR PÁGINA
-  $paginaqtdd = 5;
+  //Consulta SQL para obter os dados
+  $sql = "SELECT turma.nome_turma, turma.codigo_Oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio, turma.id_turma, curso.nome_curso FROM turma INNER JOIN curso ON curso.id_curso = turma.id_curso LIMIT $indiceInicio, $itensPorPagina";
+  $result = mysqli_query($conexao, $sql);
+  $row = mysqli_fetch_assoc($result);
 
-  //VALOR INICIAL PARA A CLÁUSULA LIMIT
-  $valorinicial = ($paginaatual * $paginaqtdd) - $paginaqtdd;
-  $paginafinal = ceil($quantidade/$paginaqtdd);
-  $paginainicial = 1;
-  $paginaproxima = $paginaatual + 1;
-  $paginaanterior = $paginaatual - 1;
-  $status = true;
+  // Contar o número total de registros
+  $totalRegistros = $conexao->query("SELECT COUNT(*) AS total FROM turma")->fetch_assoc()['total'];
 
-  //SQL PARA TRAZER AS NOTÍCIAS GERAIS
-  $sqlpag = "SELECT turma.id_turma, turma.nome_turma, turma.horario_inicio, turma.horario_termino, turma.status, turma.codigo_Oferta, curso.nome_curso FROM turma INNER JOIN curso ON turma.id_curso = curso.id_curso WHERE turma.status = $status LIMIT $valorinicial, $paginaqtdd";
-  $resultadopag = mysqli_query($conexao, $sqlpag);
-  $linhapag = mysqli_fetch_assoc($resultadopag);
-
+  $sqlTipo = "SELECT nome_tipo FROM tipo_curso";
+  $resultTipo = mysqli_query($conexao, $sqlTipo);
+  $exibeTipo = mysqli_fetch_assoc($resultTipo);
+ 
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -113,14 +104,18 @@
     <div class="col-lg-4 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
         <option selected>Nome da turma</option>
-        <option>...</option>
+        <?php foreach($result as $exibirNome):?>
+          <option><?=$exibirNome['nome_curso']?></option>
+        <?php endforeach;?>
       </select>
     </div>
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
         <option selected>Selecionar por curso</option>
-        <option>...</option>
+        <?php foreach($resultTipo as $executa):?>
+          <option><?=$executa['nome_tipo']?></option>
+        <?php endforeach;?>
       </select>
     </div>
                 
@@ -139,63 +134,60 @@
   <!-- FILTRO FILTRO SELECT -->
     
   <!-- COMEÇO CONTEUDO -->
-  <?php if($quantidade > 0) {?>
   <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
         <tr>
             <th scope="col">Curso</th>
             <th scope="col">Nome da Turma</th>
-            <th scope="col">Código de Oferta</th>
-            <th scope="col">Data</th>
+            <th scope="col">Horario Inicio</th>
+            <th scope="col">Horario Final</th>
+            <th scope="col">Data Inicio</th>
             <th colspan="2" scope="col" class="text-center"><a class="btnLaranja" href="turma_insere.php">Inserir</a></th>
           </tr>
     </thead>
         <tbody>
-                  <?php do { ?>
-                  <tr>
-                    <td><?php echo $linhapag['nome_curso'] ?></td>
-                    <td><?php echo $linhapag['nome_turma'] ?></td>
-                    <td><?php echo $linhapag['horario_inicio'] ?></td>
-                    <td><?php echo $linhapag['horario_termino'] ?></td>
-                    <td><a  class="btnLaranja" href="turma_altera.php?id_turma=<?php echo $linhapag['id_turma'] ?>">Editar</a></td>
-                    <td><a class="btnLaranja" href="turma_exclui.php?id_turma=<?php echo $linhapag['id_turma'] ?>">Excluir</a></td>
-                  </tr>
-                  <?php } while($linhapag = mysqli_fetch_assoc($resultadopag))  ?>
+          <?php foreach($result as $dados):?>
+            <tr>
+              <td><?=$dados['nome_curso'] ?></td>
+              <td><?=$dados['nome_turma'] ?></td>
+              <td><?=$dados['horario_inicio'] ?></td>
+              <td><?=$dados['horario_termino'] ?></td>
+              <td><?=$dados['data_inicio'] ?></td>
+              <td><a  class="btnLaranja" href="turma_altera.php?id_turma=<?= $dados['id_turma'] ?>">Editar</a></td>
+              <td><a class="btnLaranja" href="turma_exclui.php?id_turma=<?= $dados['id_turma'] ?>">Excluir</a></td>
+            </tr>
+          <?php endforeach;?>
         </tbody>
   </table>
 
-        <!-- PAGINAÇÃO -->
-        <nav aria-label="paginacao">
-            <ul class="pagination justify-content-center">
-              <?php if($paginaatual != $paginainicial) { ?>
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginainicial ?>">Início</a>
-                </li>
-              <?php } ?>
+  <!-- PAGINAÇÃO -->
+  <section class="navegacao mt-3">
+    <nav aria-label="Navegação de paginas">
+      <ul class="pagination d-flex justify-content-center">
+        <li class="page-item">
+          <?php if($indiceInicio>1):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual-1?>" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+            <?php endif;?>  
+            <span class="sr-only">Anterior</span>
+          </a>
 
-              <?php if($paginaatual >= 2) { ?>
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginaanterior?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-              <?php } ?>
+        </li>
 
-              <?php if($paginaatual != $paginafinal) { ?>
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginaproxima?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
+        <li class="page-item"><a class="page-link" href="#"><?=$paginaAtual?></a></li>
 
-                <li class="page-item">
-                  <a class="page-link" href="<?php echo $url . $paginafinal?>">Final</a>
-                </li>
-              <?php } ?>
-            </ul>
-          </nav>
-          <?php }  ?>
-  <!-- FINAL CONTEUDO -->
+        <li class="page-item">
+          <?php if($indiceInicio<$itensPorPagina):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual+1?>" aria-label="Próximo">
+            <span aria-hidden="true">&raquo;</span>
+            <?php endif;?>
+            <span class="sr-only">Próximo</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </section>
+  <!-- FINAL PAGINAÇÃO -->
 </section>
 
   <!-- COMEÇO RODAPÉ -->
@@ -203,7 +195,6 @@
     Copyright &copy; 2023. Todos os Direitos Reservados
   </footer>
   <!-- FINAL RODAPÉ -->
-
 
   <!-- Bootstrap 4.1 -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

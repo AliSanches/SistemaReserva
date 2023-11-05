@@ -24,20 +24,12 @@
        
         $id = $_POST['id_turma'];
 
-        $status = false;
-
-        $sql = "UPDATE turma SET status = 0 WHERE id_turma = $id ";
+        $sql = "DELETE FROM turma WHERE id_turma = $id";
 
         if(mysqli_query($conexao, $sql)) {
         header('Location:turma.php');
         }
-
     }
-    
-    if(isset($_POST['remove']) && $_POST['remove'] === 'nao') {
-        header('Location:turma.php');
-    }
-
 ?>
 
 <!doctype html>
@@ -210,8 +202,9 @@
                      <!-- Botão para acionar modal -->
                     <input type="hidden" name="id_turma" value="<?php echo $linha['id_turma'] ?>">
                     <button class="btn botaoLaranja btn-lg mr-5" type="submit" value="sim" name="remove">Excluir</button>
-                    <button class="btn botaoCinza btn-lg" type="submit" value="nao" name="remove">Voltar</button>
 
+                    <!-- Botão para voltar a home -->
+                    <a href="turma.php" class="btn botaoCinza btn-lg">Voltar</a>
                 </div>
             </form>
         </div>
