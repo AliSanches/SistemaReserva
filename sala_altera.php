@@ -14,8 +14,17 @@
         $sql = "SELECT * FROM sala WHERE id_sala = $id";
         $resultado = mysqli_query($conexao, $sql);
         $linha = mysqli_fetch_assoc($resultado);
-    
         }
+
+        // RECEBENDO INFORMACOES DA TURMA
+        if(isset($_GET['id_sala']) && $_GET['id_sala'] != '') {
+
+            $id = $_GET['id_sala'];
+        
+            $sqlSala = "SELECT num_sala, capacidade, comport_notebook FROM sala WHERE id_sala = $id";
+            $resultadoSala = mysqli_query($conexao, $sqlSala);
+            $exibeSala = mysqli_fetch_assoc($resultadoSala);
+            }
 
       // SQL PARA ALTERAR INFORMAÇÃO
     if(isset($_POST['alterar']) && $_POST['alterar'] === 'altera_sala') {
@@ -113,11 +122,11 @@
 
         <form method="POST">
             <div class="form-group row cadastro text-center">
-            
+
                 <div class="d-flex justify-content-center mb-3">
                     <label for="tipoSala_insere" class="col-sm-4 col-form-label">Tipo da Sala</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="tipoSala" name="tipoSala" aria-label="Exemplo de select com botão addon">
+                        <select class="custom-select" id="tipoSala" name="tipoSala">
                             <option>Selecione</option>
                             <?php do { ?>
                             <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $linha['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
@@ -129,7 +138,7 @@
                 <div class="d-flex justify-content-center mb-3">
                     <label for="caseSala_insere" class="col-sm-4 col-form-label">Case</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="armario" name="armario" aria-label="Exemplo de select com botão addon">
+                        <select class="custom-select" id="armario" name="armario">
                             <option>Selecione</option>
                             <?php do { ?>
                             <option value="sim" <?php if($linha['armario'] === 'sim') echo "selected" ?>>Sim</option>
@@ -142,43 +151,29 @@
                 <div class="d-flex justify-content-center mb-3">
                     <label for="comportaNote_insere" class="col-sm-4 col-form-label">Comporta Notebook</label>
                     <div class="col-sm-4">
-                        <select class="custom-select" id="comport_notebook" name="comport_notebook" aria-label="Exemplo de select com botão addon">
+                        <select class="custom-select" id="comport_notebook" name="comport_notebook">
                             <option>Selecione</option>
                             <?php do { ?>
-                            <option value="sim" <?php if($linha['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
-                            <option value="nao" <?php if($linha['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
-                            <?php } while ($linha = mysqli_fetch_assoc($resultado)) ?>
+                            <option value="sim" <?php if($exibeSala['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
+                            <option value="nao" <?php if($exibeSala['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
+                            <?php } while ($exibeSala = mysqli_fetch_assoc($resultado)) ?>
                           </select>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-center mb-3">
-                    <label for="numSala_insere" class="col-sm-4 col-form-label">Número da Sala</label>
-                    <div class="col-sm-4">
-                        <input type="name" class="form-control col-12" name="numeroSala" id="numeroSala" value="<?php echo $linha['num_sala'] ?>">
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-center mb-3">
-                    <label for="capacidadeSala_insere" class="col-sm-4 col-form-label">Capacidade Aluno</label>
-                    <div class="col-sm-4 ">
-                        <input type="text" class="form-control col-12" id="capacidade" name="capacidade" value="<?php echo $linha['capacidade'] ?>">
-                    </div>
-                </div>
 
                 <div class="botao d-flex justify-content-center mt-5">
                     <!-- Botão para acionar modal -->
-                    <input type="hidden" name="alterar" value="altera_sala">
-                    <button type="submit" class="btn botaoLaranja btn-lg mr-5">
+                    <input type="hidden" value="<?=$exibeSala['id_sala']?>">
+                    <button type="submit" name="alterar" value="altera_sala" class="btn botaoLaranja btn-lg mr-5">
                         Editar
                     </button>
 
                     <!-- Botão para voltar a home -->
                     <a href="sala.php" class="btn botaoCinza btn-lg">Voltar</a>
-
                 </div>
             </div>
-          </form>
+        </form>
     </section>
     <!-- FINAL CONTEUDO -->
 

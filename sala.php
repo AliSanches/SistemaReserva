@@ -10,12 +10,12 @@
     $itensPorPagina = 4;
 
     // Verificação para paginaAtual
-    $paginaAtual = isset($_GET['pag']) ? $_GET['PAG'] : 1;
+    $paginaAtual = isset($_GET['pag']) ? $_GET['pag'] : 1;
 
-    $indicePag = ($paginaAtual - 1) * $itensPorPagina;
+    $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
     //SQL PARA TRAZER AS NOTÍCIAS GERAIS
-    $sqlPag = "SELECT sala.num_sala, sala.capacidade, sala.comport_notebook, tipo_sala.nome_sala FROM sala INNER JOIN tipo_sala ON sala.id_tipo_sala = tipo_sala.id_tipo_sala LIMIT $indicePag, $itensPorPagina";
+    $sqlPag = "SELECT sala.num_sala, sala.capacidade, sala.armario, sala.comport_notebook, tipo_sala.nome_sala, sala.id_sala FROM sala INNER JOIN tipo_sala ON sala.id_tipo_sala = tipo_sala.id_tipo_sala LIMIT $indiceInicio, $itensPorPagina";
     $resultadoPag = mysqli_query($conexao, $sqlPag);
     $exibePag = mysqli_fetch_assoc($resultadoPag);
 
@@ -101,7 +101,7 @@
 <!-- FINAL NAVEGAÇÃO -->
 
 <!-- COMEÇO FILTRO SELECT -->
-<section class="container">
+<section class=" principal container">
   <h1 class="text-center mt-4 mb-3 tituloCadastro">Sala</h1>
 
   <div class="row align-items-center">
@@ -147,13 +147,12 @@
       </button>
     </div>
   </div>
-</section>
 <!-- FILTRO FILTRO SELECT -->
 
   
 <!-- COMEÇO CONTEUDO -->
-<section class="principal container">
-  <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+
+  <table class="table w-100 table-responsive-sm conteudo mt-2 mb-2 text-center">
     <thead>
       <tr>
         <th scope="col">Tipo da Sala</th>
@@ -166,17 +165,18 @@
     </thead>
       <tbody>
           <tr>
-            <td><?php echo $exibePag['nome_sala'] ?></td>
-            <td><?php echo $exibePag['num_sala'] ?></td>
-            <td><?php echo $exibePag['capacidade'] ?></td>
-            <td><?php echo $exibePag['armario'] ?></td>
-            <td><?php echo $exibePag['comport_notebook'] ?></td>
-            <td><a class="btnLaranja" href="sala_altera.php?id_sala=<?php echo $exibePag['id_sala'] ?>">Editar</a></td>
-            <td><a class="btnLaranja" href="sala_exclui.php?id_sala=<?php echo $exibePag['id_sala'] ?>">Excluir</a></td>
+          <?php foreach($resultadoPag as $exibir):?>
+            <td><?=$exibir['nome_sala'] ?></td>
+            <td><?=$exibir['num_sala'] ?></td>
+            <td><?=$exibir['capacidade'] ?></td>
+            <td><?=$exibir['armario'] ?></td>
+            <td><?=$exibir['comport_notebook'] ?></td>
+            <td><a class="btnLaranja" href="sala_altera.php?id_sala=<?=$exibir['id_sala'] ?>">Editar</a></td>
+            <td><a class="btnLaranja" href="sala_exclui.php?id_sala=<?=$exibir['id_sala'] ?>">Excluir</a></td>
           </tr>
+          <?php endforeach;?>
       </tbody>
   </table>
-</section>
 
   <!-- PAGINAÇÃO -->
   <section class="navegacao mt-3">
@@ -206,6 +206,7 @@
     </nav>
   </section>
   <!-- FINAL PAGINAÇÃO -->
+</section>
   <!-- FINAL CONTEUDO -->
 
   <!-- COMEÇO RODAPÉ -->

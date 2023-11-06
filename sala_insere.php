@@ -1,7 +1,7 @@
 <?php  
+
     date_default_timezone_set('America/Sao_Paulo');
     require_once('./conexao/conecta.php');
-
 
         // SQL PARA CHAMAR O TIPO_SALA
         $sqlsala = "SELECT * FROM tipo_sala";
@@ -132,7 +132,7 @@
             <div class="d-flex justify-content-center mb-3">
                 <label for="comportaNote_insere" class="col-sm-4 col-form-label">Comporta Notebook</label>
                 <div class="col-sm-4">
-                    <select class="custom-select" id="suporte_notebook" name="suporte_notebook" aria-label="Exemplo de select com botão addon">
+                    <select class="custom-select" id="suporte_notebook" name="suporte_notebook">
                         <option selected>Selecione</option>
                         <option value="sim">Sim</option>
                         <option value="nao">Não</option>
@@ -163,7 +163,6 @@
 
                 <!-- Botão para voltar a home -->
                 <a href="sala.php" class="btn botaoCinza btn-lg">Voltar</a>
-
 
             </div>
         </div>
