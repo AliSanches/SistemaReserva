@@ -1,95 +1,10 @@
 <?php
 
-date_default_timezone_set('America/Sao_Paulo');
-require_once('./conexao/conecta.php');
+    date_default_timezone_set('America/Sao_Paulo');
+    require_once('./conexao/conecta.php');
 
-$status = 1;
-
-$sqlTurma = "SELECT id_turma, nome_turma FROM turma WHERE status = $status";
-$resultadoTurma = mysqli_query($conexao, $sqlTurma);
-$linhaturma = mysqli_fetch_assoc($resultadoTurma);
-
-$sqlSala = "SELECT id_sala, num_sala FROM sala WHERE status = $status";
-$resultadoSala = mysqli_query($conexao, $sqlSala);
-$linhasala = mysqli_fetch_assoc($resultadoSala);
-
-
-$sqlCurso = "SELECT id_curso, nome_curso FROM curso WHERE status = $status";
-$resultadoCurso = mysqli_query($conexao, $sqlCurso);
-$linhacurso = mysqli_fetch_assoc($resultadoCurso);
-
-$sqlreserva = "SELECT * FROM reserva";
-$resultadoreserva = mysqli_query($conexao, $sqlreserva);
-
-$sqlusuario = "SELECT id_usuario FROM usuario WHERE status = $status";
-$resultadousuario = mysqli_query($conexao, $sqlusuario);
-
-// $salaR = $_POST['id_sala'];
-// $dataInicio = $_POST['data_inicio'];
-// $dataTermino = $_POST['data_termino'];
-$horarioInicio = $_POST['hora_inicio'];
-$horarioTermino = $_POST['hora_termino'];
-
-$sqlVerificarReserva = "SELECT COUNT(*) AS total FROM reserva WHERE 
-                    ((hora_inicio >= '$horarioInicio' AND hora_inicio <= '$horarioTermino') OR
-                    (hora_termino >= '$horarioInicio' AND hora_termino <= '$horarioTermino'))
-                    AND status = 1";
-
-$resultadoVerificar = mysqli_query($conexao, $sqlVerificarReserva);
-
-if ($resultadoVerificar) {
-$linha = mysqli_fetch_assoc($resultadoVerificar);
-$totalReservas = mysqli_num_rows($resultadoVerificar);
-
-// if ($totalReservas > 0) {
-//     echo "Já existe uma reserva para esse horário.";
-// } else {
-   // Continuar com o processo de reservareserva
-   if(isset($_POST['cadastrar']) && $_POST['cadastrar'] === 'cadastrar_reserva') {
-    // Capturar os valores do formulário aqui
-    $id_turma = $_POST['id_turma'];
-    // $id_curso = $_POST['id_curso'];
-    $id_sala = $_POST['id_sala'];
-    $id_usuario = $_POST['id_usuario'];
-
-    $dataInicio = $_POST['data_inicio'];
-    $dataTermino = $_POST['data_termino'];
-    $horarioInicio = $_POST['hora_inicio'];
-    $horarioTermino = $_POST['hora_termino'];
-
-    $dataCadastro = date('Y-m-d');
-
-    $segunda = $_POST['segunda'];
-    $terca = $_POST['terca'];
-    $quarta = $_POST['quarta'];
-    $quinta = $_POST['quinta'];
-    $sexta = $_POST['sexta'];
-    $sabado = $_POST['sabado'];
-
-    $status = 1;
-    $id_reserva = $_POST['id_reserva'];
-
-    // Primeiro, construa o SQL de inserção
-    $sqlInsercao = "INSERT INTO reserva (data_cadastro, data_inicio, data_termino, hora_inicio, hora_termino, status, id_turma, id_sala) VALUES ('$dataCadastro', '$dataInicio', '$dataTermino', '$horarioInicio', '$horarioTermino', '$status', '$id_turma', '$id_sala')";
-
-    // Executar a inserção
-    $resultadoInsercao = mysqli_query($conexao, $sqlInsercao);
-
-        if ($resultadoInsercao) {
-            echo "Reserva realizada com sucesso.";
-        } else {
-            echo "Erro ao realizar reserva.";
-        }
-    }
-//     }
-// // } else {
-// echo "Erro ao verificar reserva.";
-}
-
+    $sql = "SELECT "
 ?>
-
-
-
 <!doctype html>
 <html lang="pt-br">
   <head>
@@ -260,37 +175,12 @@ $totalReservas = mysqli_num_rows($resultadoVerificar);
                
                 <div class="d-flex justify-content-center mt-5 mb-3">
                      <!-- Botão para acionar modal -->
-                     <button type="button" class="btn botaoLaranja btn-lg mr-5" data-toggle="modal" data-target="#Modalturma">
+                     <button type="button" name="cadastrar" value="cadastrar_reserva" class="btn botaoLaranja btn-lg mr-5">
                         Reservar
                     </button>
 
                     <!-- Botão para voltar a home -->
                     <a href="reserva.php" class="btn botaoCinza btn-lg">Voltar</a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="Modalturma" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="TituloModalCentralizado"> 
-                                        <i class="fa-regular fa-circle-check"></i>
-                                        Reservar
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body my-5 text-center">
-                                    Reserva concluida com sucesso
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-                                    <button type="submit" class="btn botaoLaranja px-5" data-dismiss="modal">OK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </form>
         </div>

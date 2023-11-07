@@ -161,6 +161,20 @@
                     </div>
                 </div>
 
+                <div class="d-flex justify-content-center mb-3">
+                    <label for="numSala_altera" class="col-sm-4 col-form-label">Número Sala</label>
+                    <div class="col-sm-4">
+                        <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['num_sala']?>">         
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center mb-3">
+                    <label for="numSala_altera" class="col-sm-4 col-form-label">Capacidade</label>
+                    <div class="col-sm-4">
+                        <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['capacidade']?>">         
+                    </div>
+                </div>
+
 
                 <div class="botao d-flex justify-content-center mt-5">
                     <!-- Botão para acionar modal -->

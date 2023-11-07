@@ -2,6 +2,9 @@
 
     require_once('./conexao/conecta.php');
 
+    $sqlselect = "SELECT * FROM tipo_sala";
+    $resultadoselect = mysqli_query($conexao, $sqlselect);
+    $linhaselect = mysqli_fetch_assoc($resultadoselect);
 
     // RECEBENDO INFORMACOES DA TURMA
     if(isset($_GET['id_sala']) && $_GET['id_sala'] != '') {
@@ -9,9 +12,8 @@
         $id = $_GET['id_sala'];
     
         $sql = "SELECT * FROM sala WHERE id_sala = $id";
-        $resultado = mysqli_query($conexao, $sql);
-        $linha = mysqli_fetch_assoc($resultado);
-    
+        $resultadoSala = mysqli_query($conexao, $sql);
+        $exibeSala = mysqli_fetch_assoc($resultadoSala);
     }
 
     //REALIZANDO A EXCLUSÃO
@@ -26,13 +28,7 @@
         if(mysqli_query($conexao, $sql)) {
         header('Location:sala.php');
         }
-
     }
-    
-    if(isset($_POST['remove']) && $_POST['remove'] === 'nao') {
-        header('Location:sala.php');
-    }
-
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -110,30 +106,29 @@
     <section class="principal container">
         <h1 class="text-center mt-5 mb-5 tituloCadastro">Excluir Sala</h1>
 
-        <form>
+        <form method="POST">
             <div class="form-group row cadastro text-center">
             
                 <div class="d-flex justify-content-center mb-3">
                     <label for="tipoSala_insere" class="col-sm-4 col-form-label">Tipo da Sala</label>
                     <div class="col-sm-4" >
                         <select class="custom-select" id="tipoSala_insere" readonly>
-                            <option selected>Selecione</option>
-                            <option value="1">Um</option>
-                            <option value="2">Dois</option>
-                            <option value="3">Três</option>
-                          </select>
+                        <?php do { ?>
+                            <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $exibeSala['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
+                        <?php } while ($linhaselect = mysqli_fetch_assoc($resultadoselect)) ?>
+                        </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
                     <label for="caseSala_insere" class="col-sm-4 col-form-label">Case</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="suporte_case" name="suporte_case" readonly>
-                            <option selected>Selecione</option>
-                            <option value="1">Um</option>
-                            <option value="2">Dois</option>
-                            <option value="3">Três</option>
-                          </select>
+                        <select class="custom-select" id="suporte_notebook" name="suporte_notebook" readonly>
+                            <?php do { ?>
+                                <option value="sim" <?php if($exibeSala['armario'] === 'sim') echo "selected" ?>>Sim</option>
+                                <option value="nao" <?php if($exibeSala['armario'] === 'nao') echo "selected" ?>>Não</option>
+                            <?php } while ($exibeSala = mysqli_fetch_assoc($resultadoSala)) ?>
+                        </select>            
                     </div>
                 </div>
 
@@ -141,25 +136,25 @@
                     <label for="comportaNote_insere" class="col-sm-4 col-form-label">Comporta Notebook</label>
                     <div class="col-sm-4">
                         <select class="custom-select" id="suporte_notebook" name="suporte_notebook" readonly>
-                            <option selected>Selecione</option>
-                            <option value="1">Um</option>
-                            <option value="2">Dois</option>
-                            <option value="3">Três</option>
-                          </select>
+                        <?php do { ?>
+                            <option value="sim" <?php if($exibeSala['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
+                            <option value="nao" <?php if($exibeSala['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
+                        <?php } while ($exibeSala = mysqli_fetch_assoc($resultado)) ?>
+                        </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
                     <label for="numSala_insere" class="col-sm-4 col-form-label">Número da Sala</label>
                     <div class="col-sm-4">
-                        <input type="name" class="form-control col-12" name="numero_de_sala" id="numero_de_sala" readonly>
+                    <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['num_sala']?>">
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
                     <label for="capacidadeSala_insere" class="col-sm-4 col-form-label">Capacidade Aluno</label>
                     <div class="col-sm-4 ">
-                        <input type="text" class="form-control col-12" id="capacidade" name="capacidade" readonly>
+                    <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['capacidade']?>"> 
                     </div>
                 </div>
 
@@ -171,33 +166,7 @@
 
                     <!-- Botão para voltar a home -->
                     <a href="sala.php" class="btn botaoCinza btn-lg">Voltar</a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="Modalsala" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="TituloModalCentralizado"> 
-                                        <i class="fa-regular fa-circle-check"></i>
-                                        Excluir
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body my-5 text-center">
-                                    Exclusão concluida com sucesso
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-                                    <button type="button" class="btn botaoLaranja px-5" data-dismiss="modal">OK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-
             </div>
           </form>
     </section>

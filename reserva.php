@@ -1,6 +1,22 @@
+<?php
 
+  require_once('./conexao/conecta.php');
 
+  //Numero itens por página
+  $itensPorPagina = 4;
 
+  //Pagina atual
+  $paginaAtual = isset($_GET['pag']) ? $_GET['pag'] : 1;
+
+  //Calcular o indice de inicio dos itens a serem exibidos na pagina atual
+  $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
+
+  //Consulta SQL para obter os dados
+  $sqlConsulta = "SELECT turma.nome_turma, turma.id_turma, sala.num_sala, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
+  $resultConsulta = mysqli_query($conexao, $sqlConsulta);
+  $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
+
+?>
 <!doctype html>
 <html lang="pt-br">
   <head>
@@ -83,26 +99,25 @@
               
   <div class="row align-items-center">
     <div class="col-lg-2 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Escolher...</option>
-        <option>...</option>
+      <select id="nomeTurma" class="form-select filtro">
+      <?php foreach($resultConsulta as $exibir):?>
+        <option>
+          <?=$exibir['nome_turma']?>
+        </option>
+        <?php endforeach;?>
       </select>
     </div>
                 
     <div class="col-lg-2 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Escolher...</option>
-        <option>...</option>
+      <select id="numSala" class="form-select filtro">
+      <?php foreach($resultConsulta as $exibir):?>
+        <option>
+          <?=$exibir['num_sala']?>
+        </option>
+        <?php endforeach;?>
       </select>
     </div>
-                
-    <div class="col-lg-2 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Escolher...</option>
-        <option>...</option>
-      </select>
-    </div>
-                
+                                
     <div class="col-lg-2 mb-3 mb-lg-0">
       <input type="date" name="data" required class="form-control filtro">
     </div>
@@ -129,47 +144,56 @@
       <tr>
         <th scope="col">Turma</th>
         <th scope="col">Sala</th>
-        <th scope="col">Curso</th>
-        <th scope="col">Data Reserva</th>
-        <th scope="col">Horario Reserva</th>
+        <th scope="col">Data Inicio</th>
+        <th scope="col">Data Término</th>
+        <th scope="col">Horario Inicio</th>
+        <th scope="col">Horario Término</th>
         <th colspan="2" scope="col" class="text-center"><a class="btnLaranja" href="reserva_insere.php">Inserir</a></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Farmacia</td>
-        <td>204</td>
-        <td>Técnico em Farmacia</td>
-        <td>11/02/2022 a 20/01/2023</td>
-        <td>11:30 a 5:30</td>
-        <td scope="col"><a class="btnLaranja" href="reserva_altera.php">Editar</a></td>
-        <td scope="col"><a class="btnLaranja" href="reserva_exclui.php">Excluir</a></td>
+        <?php foreach($resultConsulta as $exibir):?>
+        <td><?=$exibir['nome_turma']?></td>
+        <td><?=$exibir['num_sala']?></td>
+        <td><?=$exibir['data_inicio']?></td>
+        <td><?=$exibir['data_termino']?></td>
+        <td><?=$exibir['hora_inicio']?></td>
+        <td><?=$exibir['hora_termino']?></td>
+        <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva<?php $exibir['id_reserva']?>">Editar</a></td>
+        <td scope="col"><a class="btnLaranja" href="reserva_exclui.php?id_reserva<?php $exibir['id_reserva']?>">Excluir</a></td>
+        <?php endforeach;?>
       </tr>
     </tbody>
   </table>
 
-<!-- PAGINAÇÃO -->
-<section class="container mb-5 mt-5">
-  <nav aria-label="Navegação de página exemplo">
-    <ul class="pagination d-flex justify-content-center">
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Anterior">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">Anterior</span>
-        </a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item">
-        <a class="page-link" href="#" aria-label="Próximo">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only">Próximo</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-</section>
+  <!-- PAGINAÇÃO -->
+  <section class="navegacao mt-3">
+    <nav aria-label="Navegação de paginas">
+      <ul class="pagination d-flex justify-content-center">
+        <li class="page-item">
+          <?php if($indiceInicio>1):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual-1?>" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+            <?php endif;?>  
+            <span class="sr-only">Anterior</span>
+          </a>
+
+        </li>
+
+        <li class="page-item"><a class="page-link" href="#"><?=$paginaAtual?></a></li>
+
+        <li class="page-item">
+          <?php if($indiceInicio<$itensPorPagina):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual+1?>" aria-label="Próximo">
+            <span aria-hidden="true">&raquo;</span>
+            <?php endif;?>
+            <span class="sr-only">Próximo</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </section>
 <!-- FINAL CONTEUDO -->
 </section>
 
