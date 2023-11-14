@@ -12,9 +12,17 @@
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
   //Consulta SQL para obter os dados
-  $sqlConsulta = "SELECT turma.nome_turma, turma.id_turma, sala.num_sala, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
+  $sqlConsulta = "SELECT turma.id_turma, sala.num_sala, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
   $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
+
+  $sqlTurma = "SELECT nome_turma FROM turma";
+  $resultTurma = mysqli_query($conexao, $sqlTurma);
+  $exibeTurma = mysqli_fetch_assoc($resultSala);
+
+  $sqlSala = "SELECT num_sala FROM sala";
+  $resultSala = mysqli_query($conexao, $sqlSala);
+  $exibeSala = mysqli_fetch_assoc($resultSala);
 
 ?>
 <!doctype html>
@@ -92,7 +100,6 @@
 </nav>
 <!-- FINAL NAVEGAÇÃO -->
 
-
 <!-- COMEÇO FILTRO SELECT -->
 <section class="container text-left">
   <h1 class="text-center mt-4 mb-3 tituloCadastro">Reserva</h1>
@@ -100,8 +107,9 @@
   <div class="row align-items-center">
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="nomeTurma" class="form-select filtro">
-      <?php foreach($resultConsulta as $exibir):?>
-        <option>
+      <option>Turma</option>
+      <?php foreach($resultTurma as $exibir):?>
+        <option value="<?php echo $exibeConsulta['id_turma'] ?>"><?php echo $exibeConsulta['nome_turma'] ?>
           <?=$exibir['nome_turma']?>
         </option>
         <?php endforeach;?>
@@ -110,7 +118,8 @@
                 
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="numSala" class="form-select filtro">
-      <?php foreach($resultConsulta as $exibir):?>
+      <option>Sala</option>
+      <?php foreach($resultSala as $exibir):?>
         <option>
           <?=$exibir['num_sala']?>
         </option>

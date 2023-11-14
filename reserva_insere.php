@@ -3,7 +3,49 @@
     date_default_timezone_set('America/Sao_Paulo');
     require_once('./conexao/conecta.php');
 
-    $sql = "SELECT "
+    $sqlTurma = "SELECT id_turma, nome_turma FROM turma";
+    $resulTurma = mysqli_query($conexao, $sqlTurma);
+    $exibirTurma = mysqli_fetch_assoc($resulTurma);
+
+    $sqlSala = "SELECT id_sala, num_sala FROM sala";
+    $resulSala = mysqli_query($conexao, $sqlSala);
+    $exibirSala = mysqli_fetch_assoc($resulSala);
+
+    $sqlReserva = "SELECT id_Reserva FROM reserva";
+    $resulReserva = mysqli_query($conexao, $sqlReserva);
+    $exibirReserva = mysqli_fetch_assoc($resulReserva);
+
+    $sqlCurso = "SELECT id_curso, nome_curso FROM curso";
+    $resulCurso = mysqli_query($conexao, $sqlCurso);
+    $exibirCurso = mysqli_fetch_assoc($resulTurma);
+
+    if(isset($_POST['cadastrar']) && $_POST['cadastrar'] === 'inserir_cadastro') {
+
+        $id = mysqli_real_escape_string($conexao, $_POST['id_reserva']);
+        $nomeTurma = mysqli_real_escape_string($conexao, $_POST['nome_turma']);
+        $numeroSala = mysqli_real_escape_string($conexao, $_POST['num_sala']);
+        $nomeCurso = mysqli_real_escape_string($conexao, $_POST['nome_curso']);
+        $dataInicio = mysqli_real_escape_string($conexao, $_POST['data_inicio']);
+        $dataTermino = mysqli_real_escape_string($conexao, $_POST['data_termino']);
+        $horaInicio = mysqli_real_escape_string($conexao, $_POST['hora_inicio']);
+        $horaTermino = mysqli_real_escape_string($conexao, $_POST['hora_termino']);
+        $segunda = $_POST['segunda'];
+        $terca = $_POST['terca'];
+        $quarta = $_POST['quarta'];
+        $quinta = $_POST['quinta'];
+        $sexta = $_POST['sexta'];
+        $sabado = $_POST['sabado'];
+        $status = true;
+
+        $sql = "INSERT INTO reserva (id_reserva, nome_turma, num_sala, nome_curso, data_inicio, data_termino, 
+        hora_inicio, hora_termino, segunda, terca, quarta, quinta, sexta, sabado, status) VALUES ('$id', '$nomeTurma', 
+        '$numeroSala', '$nomeCurso', '$dataInicio', '$dataTermino', '$horaInicio', '$horaTermino', '$segunda', '$terca', '$quarta', '$quinta',
+        '$sexta', '$sabado', '$status')";
+
+        if(mysqli_query($conexao, $sql)) {
+            header('Location:reserva.php');
+        }
+    }
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -88,22 +130,28 @@
                             <label for="curso_insere">Turma</label>
                             <select id="curso_insere" class="form-select">
                                 <option selected>Escolher...</option>
-                                <option>...</option>
+                                <?php foreach($resulTurma as $exibir):?>
+                                    <option value="<?php echo $exibirReserva['id_reserva']?>"><?=$exibir['nome_turma']?></option>
+                                <?php endforeach;?>
                             </select>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="nomeTurma_insere">Sala</label>
                         <select id="curso_insere" class="form-select">
                             <option selected>Escolher...</option>
-                            <option>...</option>
+                            <?php foreach($resulSala as $exibir):?>
+                                <option value="<?php echo $exibirSala['id_sala']?>"><?=$exibir['num_sala']?></option>
+                            <?php endforeach;?>
                         </select>
                     </div>
                     
                     <div class="form-group col-md-3">
                         <label for="codOferta_insere">Curso</label>
                         <select id="curso_insere" class="form-select">
-                            <option selected>Escolher...</option>
-                            <option>...</option>
+                        <option selected>Escolher...</option>
+                            <?php foreach($resulCurso as $exibir):?>
+                                <option value="<?php echo $exibirCurso['id_curso']?>"><?=$exibir['nome_curso']?></option>
+                            <?php endforeach;?>
                         </select>
                     </div>
                 </div>
@@ -113,69 +161,70 @@
                         <label class=" small " for="disabledFieldsetCheck">
                             Segunda-Feira
                         </label>
-                        <input type="checkbox">
+                        <input type="checkbox" name="segunda" value="1">
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Terça-Feira
                         </label>
-                        <input type="checkbox">
+                        <input type="checkbox" name="terca" value="1">
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Quarta-Feira
                         </label>
-                        <input type="checkbox">
+                        <input type="checkbox" name="quarta" value="1">
                     </div>
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Quinta-Feira
                         </label>
-                        <input type="checkbox">
+                        <input type="checkbox" name="quinta" value="1">
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Sexta-Feira
                         </label>
-                        <input type="checkbox">
+                        <input type="checkbox" name="sexta" value="1">
                     </div>
 
                     <div class="form-check col-md-2">
                         <label class=" small " for="disabledFieldsetCheck">
                             Sábado
                         </label>
-                        <input type="checkbox">
+                        <input type="checkbox" name="sabado" value="1">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-6">
                         <label for="dataInicio_insere" class="d-flex">Data Início</label>
-                        <input type="date" class="form-control" id="data_inicio">
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio">
                     </div>
 
                     <div class="col-6">
                         <label for="hora_inicio" class="d-flex mt-0">Hora Início</label>
-                        <input type="time" class="mt-0 centro form-control" id="horaInicio_insere">
+                        <input type="time" class="mt-0 centro form-control" id="horaInicio_insere" name="hora_inicio">
                     </div>
 
                     <div class="col-6 mt-3">
                         <label for="data_termino" class="d-flex">Data Término</label>
-                        <input type="date" class="form-control" id="dataTermino_insere">
+                        <input type="date" class="form-control" id="dataTermino_insere" name="data_termino">
                     </div>
 
                     <div class="col-6">
                         <label for="hora_termino" class="d-flex mt-3">Hora Término</label>
-                        <input type="time" class="mt-2 centro form-control" id="horaTermino_insere">
+                        <input type="time" class="mt-2 centro form-control" id="horaTermino_insere" name="hora_termino">
                     </div>
                 </div>
                
                 <div class="d-flex justify-content-center mt-5 mb-3">
                      <!-- Botão para acionar modal -->
-                     <button type="button" name="cadastrar" value="cadastrar_reserva" class="btn botaoLaranja btn-lg mr-5">
+                    <input type="hidden" name="cadastrar" value="inserir_cadastro">
+                    <button type="button" name="cadastrar" value="inserir_cadastro" class="btn botaoLaranja btn-lg mr-5">
                         Reservar
                     </button>
 

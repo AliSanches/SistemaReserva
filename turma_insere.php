@@ -25,7 +25,10 @@
         $sabado = $_POST['sabado'];
         $status = true;
         
-        $sql = "INSERT INTO turma (nome_turma, codigo_Oferta, data_inicio, data_termino, ano, data_cadastro, horario_inicio, horario_termino, segunda, terca, quarta, quinta, sexta,sabado, id_curso, status) VALUES ('$nomeTurma', '$codigoOferta', '$dataInicio', '$dataTermino', '$ano', '$dataCadastro', '$horarioInicio', '$horarioTermino', '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$Tipocurso', '$status')";
+        $sql = "INSERT INTO turma (nome_turma, codigo_Oferta, data_inicio, data_termino, ano, data_cadastro, 
+        horario_inicio, horario_termino, segunda, terca, quarta, quinta, sexta,sabado, id_curso, status) VALUES 
+        ('$nomeTurma', '$codigoOferta', '$dataInicio', '$dataTermino', '$ano', '$dataCadastro', '$horarioInicio', '$horarioTermino', 
+        '$segunda', '$terca', '$quarta', '$quinta', '$sexta', '$sabado', '$Tipocurso', '$status')";
 
         if(mysqli_query($conexao, $sql)) {
             header('Location:turma.php');
@@ -124,6 +127,7 @@
                                 <?php } while($linhacurso = mysqli_fetch_assoc($resultadocurso))  ?>
                             </select>
                     </div>
+                    
                     <div class="form-group col-md-5">
                         <label for="nomeTurma_insere">Nome da Turma</label>
                         <input type="text" class="form-control" id="nome_turma" name="nome_turma">
