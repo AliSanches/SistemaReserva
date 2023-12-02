@@ -21,10 +21,7 @@
 
     if(isset($_POST['cadastrar']) && $_POST['cadastrar'] === 'inserir_cadastro') {
 
-        $id = mysqli_real_escape_string($conexao, $_POST['id_reserva']);
-        $nomeTurma = mysqli_real_escape_string($conexao, $_POST['nome_turma']);
-        $numeroSala = mysqli_real_escape_string($conexao, $_POST['num_sala']);
-        $nomeCurso = mysqli_real_escape_string($conexao, $_POST['nome_curso']);
+        $idReserva = mysqli_real_escape_string($conexao, $_POST['id_reserva']);
         $dataInicio = mysqli_real_escape_string($conexao, $_POST['data_inicio']);
         $dataTermino = mysqli_real_escape_string($conexao, $_POST['data_termino']);
         $horaInicio = mysqli_real_escape_string($conexao, $_POST['hora_inicio']);
@@ -37,9 +34,8 @@
         $sabado = $_POST['sabado'];
         $status = true;
 
-        $sql = "INSERT INTO reserva (id_reserva, nome_turma, num_sala, nome_curso, data_inicio, data_termino, 
-        hora_inicio, hora_termino, segunda, terca, quarta, quinta, sexta, sabado, status) VALUES ('$id', '$nomeTurma', 
-        '$numeroSala', '$nomeCurso', '$dataInicio', '$dataTermino', '$horaInicio', '$horaTermino', '$segunda', '$terca', '$quarta', '$quinta',
+        $sql = "INSERT INTO reserva (id_reserva, data_inicio, data_termino, 
+        hora_inicio, hora_termino, segunda, terca, quarta, quinta, sexta, sabado, status) VALUES ('$idReserva','$dataInicio', '$dataTermino', '$horaInicio', '$horaTermino', '$segunda', '$terca', '$quarta', '$quinta',
         '$sexta', '$sabado', '$status')";
 
         if(mysqli_query($conexao, $sql)) {
@@ -128,8 +124,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-4">
                             <label for="curso_insere">Turma</label>
-                            <select id="curso_insere" class="form-select">
-                                <option selected>Escolher...</option>
+                            <select id="curso_insere" class="form-select">  
                                 <?php foreach($resulTurma as $exibir):?>
                                     <option value="<?php echo $exibirReserva['id_reserva']?>"><?=$exibir['nome_turma']?></option>
                                 <?php endforeach;?>
@@ -138,7 +133,6 @@
                     <div class="form-group col-md-5">
                         <label for="nomeTurma_insere">Sala</label>
                         <select id="curso_insere" class="form-select">
-                            <option selected>Escolher...</option>
                             <?php foreach($resulSala as $exibir):?>
                                 <option value="<?php echo $exibirSala['id_sala']?>"><?=$exibir['num_sala']?></option>
                             <?php endforeach;?>
@@ -148,7 +142,6 @@
                     <div class="form-group col-md-3">
                         <label for="codOferta_insere">Curso</label>
                         <select id="curso_insere" class="form-select">
-                        <option selected>Escolher...</option>
                             <?php foreach($resulCurso as $exibir):?>
                                 <option value="<?php echo $exibirCurso['id_curso']?>"><?=$exibir['nome_curso']?></option>
                             <?php endforeach;?>
@@ -224,7 +217,7 @@
                 <div class="d-flex justify-content-center mt-5 mb-3">
                      <!-- Botão para acionar modal -->
                     <input type="hidden" name="cadastrar" value="inserir_cadastro">
-                    <button type="button" name="cadastrar" value="inserir_cadastro" class="btn botaoLaranja btn-lg mr-5">
+                    <button type="submit" name="cadastrar" value="inserir_cadastro" class="btn botaoLaranja btn-lg mr-5">
                         Reservar
                     </button>
 

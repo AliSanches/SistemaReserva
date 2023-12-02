@@ -12,17 +12,9 @@
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
   //Consulta SQL para obter os dados
-  $sqlConsulta = "SELECT turma.id_turma, sala.num_sala, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
+  $sqlConsulta = "SELECT turma.id_turma, sala.num_sala, turma.nome_turma, turma.id_turma, reserva.id_reserva, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
   $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
-
-  $sqlTurma = "SELECT nome_turma FROM turma";
-  $resultTurma = mysqli_query($conexao, $sqlTurma);
-  $exibeTurma = mysqli_fetch_assoc($resultSala);
-
-  $sqlSala = "SELECT num_sala FROM sala";
-  $resultSala = mysqli_query($conexao, $sqlSala);
-  $exibeSala = mysqli_fetch_assoc($resultSala);
 
 ?>
 <!doctype html>
@@ -108,8 +100,8 @@
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="nomeTurma" class="form-select filtro">
       <option>Turma</option>
-      <?php foreach($resultTurma as $exibir):?>
-        <option value="<?php echo $exibeConsulta['id_turma'] ?>"><?php echo $exibeConsulta['nome_turma'] ?>
+      <?php foreach($resultConsulta as $exibir):?>
+        <option value="<?php echo $exibeConsulta['id_turma']?>">
           <?=$exibir['nome_turma']?>
         </option>
         <?php endforeach;?>
@@ -119,7 +111,7 @@
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="numSala" class="form-select filtro">
       <option>Sala</option>
-      <?php foreach($resultSala as $exibir):?>
+      <?php foreach($resultConsulta as $exibir):?>
         <option>
           <?=$exibir['num_sala']?>
         </option>
@@ -169,8 +161,8 @@
         <td><?=$exibir['data_termino']?></td>
         <td><?=$exibir['hora_inicio']?></td>
         <td><?=$exibir['hora_termino']?></td>
-        <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva<?php $exibir['id_reserva']?>">Editar</a></td>
-        <td scope="col"><a class="btnLaranja" href="reserva_exclui.php?id_reserva<?php $exibir['id_reserva']?>">Excluir</a></td>
+        <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva=<?=$exibir['id_reserva']?>">Editar</a></td>
+        <td scope="col"><a class="btnLaranja" href="reserva_exclui.php?id_reserva=<?=$exibir['id_reserva']?>">Excluir</a></td>
         <?php endforeach;?>
       </tr>
     </tbody>
