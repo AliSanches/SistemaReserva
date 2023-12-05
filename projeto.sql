@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 4.8.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 18-Ago-2023 às 22:11
--- Versão do servidor: 10.4.27-MariaDB
--- versão do PHP: 8.0.25
+-- Generation Time: 06-Dez-2023 às 00:20
+-- Versão do servidor: 10.1.31-MariaDB
+-- PHP Version: 7.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,10 +19,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `projeto`
+-- Database: `projeto`
 --
-CREATE DATABASE IF NOT EXISTS `projeto` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `projeto`;
 
 -- --------------------------------------------------------
 
@@ -29,14 +28,13 @@ USE `projeto`;
 -- Estrutura da tabela `curso`
 --
 
-DROP TABLE IF EXISTS `curso`;
 CREATE TABLE `curso` (
   `id_curso` int(11) NOT NULL,
   `status` bit(1) NOT NULL,
   `nome_curso` varchar(60) NOT NULL,
   `data_cadastro` date NOT NULL,
   `id_tipo_curso` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `curso`
@@ -45,9 +43,10 @@ CREATE TABLE `curso` (
 INSERT INTO `curso` (`id_curso`, `status`, `nome_curso`, `data_cadastro`, `id_tipo_curso`) VALUES
 (10, b'0', 'Técnico de Informatica', '2023-08-16', 5),
 (13, b'0', 'Técnico em Moda Nuclear', '2023-08-17', 6),
-(14, b'0', 'Técnico de Aviação Nuclear', '2023-08-17', 3),
-(15, b'1', 'Técnico de Rede Nuclear', '2023-08-17', 7),
-(16, b'1', 'Teatro Nuclear', '2023-08-17', 1);
+(16, b'1', 'Análise e Desenvolvimento de Sistemas', '2023-08-17', 7),
+(17, b'0', 'Análise de Suporte', '0000-00-00', 2),
+(18, b'0', 'Curso de Testes', '0000-00-00', 5),
+(19, b'0', 'Mecânico ', '0000-00-00', 2);
 
 -- --------------------------------------------------------
 
@@ -55,11 +54,10 @@ INSERT INTO `curso` (`id_curso`, `status`, `nome_curso`, `data_cadastro`, `id_ti
 -- Estrutura da tabela `reserva`
 --
 
-DROP TABLE IF EXISTS `reserva`;
 CREATE TABLE `reserva` (
   `id_reserva` int(11) NOT NULL,
-  `hora_cadastro` time NOT NULL,
-  `data_cadastro` date NOT NULL,
+  `hora_cadastro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data_cadastro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `data_inicio` date NOT NULL,
   `data_termino` date NOT NULL,
   `hora_inicio` time NOT NULL,
@@ -68,7 +66,14 @@ CREATE TABLE `reserva` (
   `id_turma` int(11) DEFAULT NULL,
   `id_sala` int(11) DEFAULT NULL,
   `id_usuario` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `reserva`
+--
+
+INSERT INTO `reserva` (`id_reserva`, `hora_cadastro`, `data_cadastro`, `data_inicio`, `data_termino`, `hora_inicio`, `hora_termino`, `status`, `id_turma`, `id_sala`, `id_usuario`) VALUES
+(1, '2023-11-29 15:30:00', '2023-11-27 00:00:00', '2023-12-01', '2023-12-02', '09:00:00', '17:00:00', b'1', 16, 7, 1);
 
 -- --------------------------------------------------------
 
@@ -76,7 +81,6 @@ CREATE TABLE `reserva` (
 -- Estrutura da tabela `sala`
 --
 
-DROP TABLE IF EXISTS `sala`;
 CREATE TABLE `sala` (
   `id_sala` int(11) NOT NULL,
   `status` bit(1) NOT NULL,
@@ -87,7 +91,7 @@ CREATE TABLE `sala` (
   `data_cadastro` date NOT NULL,
   `hora_cadastro` time NOT NULL,
   `id_tipo_sala` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `sala`
@@ -108,12 +112,11 @@ INSERT INTO `sala` (`id_sala`, `status`, `num_sala`, `capacidade`, `armario`, `c
 -- Estrutura da tabela `tipo_curso`
 --
 
-DROP TABLE IF EXISTS `tipo_curso`;
 CREATE TABLE `tipo_curso` (
   `id_tipo_curso` int(11) NOT NULL,
   `value` varchar(60) NOT NULL,
   `nome_tipo` varchar(60) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `tipo_curso`
@@ -134,12 +137,11 @@ INSERT INTO `tipo_curso` (`id_tipo_curso`, `value`, `nome_tipo`) VALUES
 -- Estrutura da tabela `tipo_sala`
 --
 
-DROP TABLE IF EXISTS `tipo_sala`;
 CREATE TABLE `tipo_sala` (
   `id_tipo_sala` int(11) NOT NULL,
   `value` varchar(52) NOT NULL,
   `nome_sala` varchar(73) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `tipo_sala`
@@ -167,7 +169,6 @@ INSERT INTO `tipo_sala` (`id_tipo_sala`, `value`, `nome_sala`) VALUES
 -- Estrutura da tabela `turma`
 --
 
-DROP TABLE IF EXISTS `turma`;
 CREATE TABLE `turma` (
   `id_turma` int(11) NOT NULL,
   `status` bit(1) NOT NULL,
@@ -185,23 +186,21 @@ CREATE TABLE `turma` (
   `quarta` bit(1) NOT NULL,
   `quinta` bit(1) NOT NULL,
   `sexta` bit(1) NOT NULL,
-  `sabado` bit(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `sabado` bit(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Extraindo dados da tabela `turma`
 --
 
 INSERT INTO `turma` (`id_turma`, `status`, `nome_turma`, `horario_inicio`, `horario_termino`, `ano`, `codigo_Oferta`, `id_curso`, `data_inicio`, `data_termino`, `data_cadastro`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`) VALUES
-(1, b'1', 'Turma 44', '13:30:00', '17:30:00', 2023, 123121, 10, '2023-08-08', '2023-08-17', '2023-08-16', b'1', b'1', b'1', b'1', b'1', b'0'),
 (2, b'1', 'Turma', '17:06:00', '00:00:00', 2023, 111111, NULL, '2023-08-17', '2023-08-18', '2023-08-17', b'0', b'0', b'0', b'0', b'0', b'0'),
-(9, b'1', 'Turma23', '13:30:00', '17:30:00', 2023, 43123, 10, '2023-08-08', '2023-08-09', '2023-08-17', b'0', b'0', b'0', b'0', b'0', b'0'),
 (13, b'1', 'Veterinaria', '17:06:00', '19:06:00', 2023, 101, NULL, '2023-08-19', '2023-08-26', '2023-08-18', b'0', b'0', b'0', b'0', b'0', b'0'),
 (14, b'1', 'Veterinaria', '16:10:00', '19:10:00', 2023, 123121, 16, '2023-08-10', '2023-08-31', '2023-08-18', b'0', b'0', b'0', b'0', b'0', b'0'),
-(15, b'1', 'Veterinaria', '16:15:00', '19:15:00', 2023, 123121, 15, '2023-08-16', '2023-08-25', '2023-08-18', b'1', b'1', b'0', b'0', b'0', b'0'),
-(16, b'1', 'Mecanico Nuclear', '15:38:00', '18:41:00', 2023, 123121, 13, '2023-08-16', '2023-08-19', '2023-08-18', b'1', b'0', b'0', b'0', b'0', b'0'),
-(17, b'1', 'Veterinaria', '16:40:00', '14:45:00', 2023, 111111, 14, '2023-08-19', '2023-08-20', '2023-08-18', b'1', b'0', b'0', b'0', b'0', b'0'),
-(18, b'1', 'Astronauta Nuclear 24', '14:43:00', '19:41:00', 2023, 123121, 15, '2023-08-19', '2023-08-24', '2023-08-18', b'1', b'0', b'0', b'0', b'0', b'0');
+(16, b'1', 'Turma 10', '15:38:00', '18:41:00', 2023, 123121, 13, '2023-08-16', '2023-08-19', '2023-08-18', b'1', b'1', b'1', b'1', b'0', b'0'),
+(17, b'1', 'Turma 1', '19:00:00', '22:30:00', 2023, 343, 18, '2023-11-01', '2023-11-30', '2023-11-04', b'1', b'1', b'1', b'1', b'1', b'0'),
+(18, b'1', 'Turma 1', '18:00:00', '22:00:00', 2023, 987, 19, '2024-01-10', '2024-12-20', '2023-11-05', b'1', b'1', b'1', b'1', b'1', b'0'),
+(19, b'1', 'Turma 10', '08:00:00', '12:00:00', 2023, 878, 16, '2024-01-01', '2024-12-31', '2023-11-05', b'1', b'1', b'1', b'1', b'1', b'0');
 
 -- --------------------------------------------------------
 
@@ -209,7 +208,6 @@ INSERT INTO `turma` (`id_turma`, `status`, `nome_turma`, `horario_inicio`, `hora
 -- Estrutura da tabela `usuario`
 --
 
-DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL,
   `status` bit(1) NOT NULL,
@@ -217,22 +215,31 @@ CREATE TABLE `usuario` (
   `usuario` varchar(20) NOT NULL,
   `senha` varchar(20) NOT NULL,
   `tipo` enum('adm','com') DEFAULT NULL,
-  `data_cadastro` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `data_cadastro` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Índices para tabelas despejadas
+-- Extraindo dados da tabela `usuario`
+--
+
+INSERT INTO `usuario` (`id_usuario`, `status`, `nome`, `usuario`, `senha`, `tipo`, `data_cadastro`) VALUES
+(1, b'1', 'Alisson', 'Alisson.Sanches', '1234', 'adm', '0000-00-00'),
+(2, b'1', 'Juliana', 'Juliana.Matos', '4321', 'com', '0000-00-00'),
+(3, b'0', 'Teste', 'Teste.Teste', '1233', 'com', NULL);
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Índices para tabela `curso`
+-- Indexes for table `curso`
 --
 ALTER TABLE `curso`
   ADD PRIMARY KEY (`id_curso`),
   ADD KEY `id_tipo_curso` (`id_tipo_curso`);
 
 --
--- Índices para tabela `reserva`
+-- Indexes for table `reserva`
 --
 ALTER TABLE `reserva`
   ADD PRIMARY KEY (`id_reserva`),
@@ -241,85 +248,85 @@ ALTER TABLE `reserva`
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
--- Índices para tabela `sala`
+-- Indexes for table `sala`
 --
 ALTER TABLE `sala`
   ADD PRIMARY KEY (`id_sala`),
   ADD KEY `id_tipo_sala` (`id_tipo_sala`);
 
 --
--- Índices para tabela `tipo_curso`
+-- Indexes for table `tipo_curso`
 --
 ALTER TABLE `tipo_curso`
   ADD PRIMARY KEY (`id_tipo_curso`);
 
 --
--- Índices para tabela `tipo_sala`
+-- Indexes for table `tipo_sala`
 --
 ALTER TABLE `tipo_sala`
   ADD PRIMARY KEY (`id_tipo_sala`);
 
 --
--- Índices para tabela `turma`
+-- Indexes for table `turma`
 --
 ALTER TABLE `turma`
   ADD PRIMARY KEY (`id_turma`),
   ADD KEY `id_curso` (`id_curso`);
 
 --
--- Índices para tabela `usuario`
+-- Indexes for table `usuario`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id_usuario`);
 
 --
--- AUTO_INCREMENT de tabelas despejadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de tabela `curso`
+-- AUTO_INCREMENT for table `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT de tabela `reserva`
+-- AUTO_INCREMENT for table `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de tabela `sala`
+-- AUTO_INCREMENT for table `sala`
 --
 ALTER TABLE `sala`
   MODIFY `id_sala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de tabela `tipo_curso`
+-- AUTO_INCREMENT for table `tipo_curso`
 --
 ALTER TABLE `tipo_curso`
   MODIFY `id_tipo_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT de tabela `tipo_sala`
+-- AUTO_INCREMENT for table `tipo_sala`
 --
 ALTER TABLE `tipo_sala`
   MODIFY `id_tipo_sala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT de tabela `turma`
+-- AUTO_INCREMENT for table `turma`
 --
 ALTER TABLE `turma`
-  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT de tabela `usuario`
+-- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Restrições para despejos de tabelas
+-- Constraints for dumped tables
 --
 
 --
