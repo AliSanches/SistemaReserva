@@ -1,3 +1,22 @@
+<?php
+
+  require_once('./conexao/conecta.php');
+
+  //Numero itens por página
+  $itensPorPagina = 4;
+
+  //Pagina atual
+  $paginaAtual = isset($_GET['pag']) ? $_GET['pag'] : 1;
+
+  //Calcular o indice de inicio dos itens a serem exibidos na pagina atual
+  $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
+
+  $sqlUsuario = "SELECT nome, tipo, usuario, id_usuario FROM usuario LIMIT $indiceInicio, $itensPorPagina";
+  $resultUsuario = mysqli_query($conexao, $sqlUsuario);
+  $exibeUsuario = mysqli_fetch_assoc($resultUsuario);
+
+?>
+
 <!doctype html>
 <html lang="pt-br">
   <head>
@@ -71,7 +90,7 @@
 <!-- FINAL NAVEGAÇÃO -->
 
 <!-- COMEÇO CONTEUDO -->
-<section class="principal container mt-4">
+<section class="container mt-4">
   <h1 class="text-center mt-4 mb-3 tituloCadastro">Usuário</h1>
 
   <div class="row align-items-center">
@@ -83,7 +102,9 @@
     <div class="col-lg-5 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
         <option selected>Tipo de usuário</option>
-        <option>...</option>
+        <?php foreach($resultUsuario as $exibe):?>
+        <option value="<?php echo $exibeUsuario['id_usuario']?>"><?=$exibe['tipo']?></option>
+        <?php endforeach;?>
       </select>
     </div>
           
@@ -95,54 +116,59 @@
       </button>
     </div>
   </div>
+</section>
 
+<section class="principal container">
   <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
-    <thead>
+  <thead>
       <tr>
-        <th>Nome</th>
-        <th>Nome de Usuário</th>
-        <th>Senha</th>
-        <th>Redigite a Senha</th>
-        <th>Comum/Supervisor</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Usuário</th>
+        <th scope="col">Comum/Administrador</th>
         <th colspan="2" scope="col" class="text-center"><a class="btnLaranja" href="usuario_insere.php">Inserir</a></th>
       </tr>
     </thead>
     <tbody>
+    <?php foreach($resultUsuario as $exibir):?>
       <tr>
-        <td>Cleiton</td>
-        <td>Cleiton Ferreira</td>
-        <td>1234</td>
-        <td>1234</td>
-        <td>Comum/Supervisor</td>
-        <td><a class="btnLaranja" href="usuario_altera.php">Editar</a></td>
-        <td><a class="btnLaranja" href="usuario_exclui.php">Excluir</a></td>
+        <td><?=$exibir['nome']?></td>
+        <td><?=$exibir['usuario']?></td>
+        <td><?=$exibir['tipo']?></td>
+        <td scope="col"><a class="btnLaranja" href="usuario_altera.php?id_usuario=<?=$exibir['id_usuario']?>">Editar</a></td>
+        <td scope="col"><a class="btnLaranja" href="usuario_exclui.php?id_usuario=<?=$exibir['id_usuario']?>">Excluir</a></td>
       </tr>
+      <?php endforeach;?>
     </tbody>
   </table>
 
 <!-- PAGINAÇÃO -->
-  <section class="container mb-5 mt-5">
-    <nav aria-label="Navegação de página exemplo">
+<section class="navegacao mt-3">
+    <nav aria-label="Navegação de paginas">
       <ul class="pagination d-flex justify-content-center">
         <li class="page-item">
-          <a class="page-link" href="#" aria-label="Anterior">
+          <?php if($indiceInicio>1):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual-1?>" aria-label="Anterior">
             <span aria-hidden="true">&laquo;</span>
+            <?php endif;?>  
             <span class="sr-only">Anterior</span>
           </a>
+
         </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+        <li class="page-item"><a class="page-link" href="#"><?=$paginaAtual?></a></li>
+
         <li class="page-item">
-          <a class="page-link" href="#" aria-label="Próximo">
+          <?php if($indiceInicio<$itensPorPagina):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual+1?>" aria-label="Próximo">
             <span aria-hidden="true">&raquo;</span>
+            <?php endif;?>
             <span class="sr-only">Próximo</span>
           </a>
         </li>
       </ul>
     </nav>
   </section>
-  <!-- FINAL CONTEUDO -->
+<!-- FINAL CONTEUDO -->
 </section>
 
   <!-- COMEÇO RODAPÉ -->

@@ -1,9 +1,15 @@
+<?php 
+
+    require_once('./conexao/conecta.php');
+
+?>
+
 <!doctype html>
 <html lang="pt-br">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tela Inicial</title>
+    <title>Edição Usuário</title>
     
     <!-- Font awesome -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -79,7 +85,7 @@
             <form class="fs-18">
                 <div class="form-group">
                     <label for="loginUsuario_altera">Nome</label>
-                    <input type="text" class="form-control" id="loginUsuario_altera" >
+                    <input type="text" class="form-control" id="loginUsuario_altera" value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $linha['id_tipo_sala']) echo "selected" ?>>
                 </div>
                 <div class="form-group">
                     <label for="nomeUsuario_altera">Nome de Usuário</label>
@@ -121,7 +127,7 @@
         <!-- BOTÕES -->
         <div class="botao d-flex justify-content-center mt-5 fs-18">
                         <!-- Botão para acionar modal -->
-                        <button type="button" class="btn botaoLaranja btn-lg mr-5" data-toggle="modal" data-target="#Modalusuario_Edita">
+                        <button type="submit" class="btn botaoLaranja btn-lg mr-5" data-toggle="modal" data-target="#Modalusuario_Edita">
                             Editar
                         </button>
 

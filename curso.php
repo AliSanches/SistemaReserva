@@ -162,7 +162,7 @@ $pag = 1;
 
   </table>
 
-  <!-- PAGINAÇÃO -->
+<!-- PAGINAÇÃO -->
   <section class="navegacao mt-3">
     <nav aria-label="Navegação de paginas">
       <ul class="pagination d-flex justify-content-center">

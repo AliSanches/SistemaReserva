@@ -106,49 +106,6 @@
                 </div>
 
                 <div class="form-row">
-                    <div class="form-check col-lg-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Segunda-Feira
-                        </label>
-                        <input type="checkbox" disabled>
-                    </div>
-
-                    <div class="form-check col-lg-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Terça-Feira
-                        </label>
-                        <input type="checkbox" disabled>
-                    </div>
-
-                    <div class="form-check col-lg-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Quarta-Feira
-                        </label>
-                        <input type="checkbox" disabled>
-                    </div>
-                    <div class="form-check col-lg-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Quinta-Feira
-                        </label>
-                        <input type="checkbox" disabled>
-                    </div>
-
-                    <div class="form-check col-lg-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Sexta-Feira
-                        </label>
-                        <input type="checkbox" disabled>
-                    </div>
-
-                    <div class="form-check col-lg-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Sábado
-                        </label>
-                        <input type="checkbox" disabled>
-                    </div>
-                </div>
-
-                <div class="form-row">
                     <div class="col-6">
                         <label for="dataInicio_exclui" class="d-flex">Data Início</label>
                         <input type="date" class="form-control" readonly>

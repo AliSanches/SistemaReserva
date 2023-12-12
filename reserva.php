@@ -11,6 +11,10 @@
   //Calcular o indice de inicio dos itens a serem exibidos na pagina atual
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
+  $sqlCurso = "SELECT nome_curso, id_curso FROM curso";
+  $resultCurso = mysqli_query($conexao, $sqlCurso);
+  $exibeCurso = mysqli_fetch_assoc($resultCurso);
+
   //Consulta SQL para obter os dados
   $sqlConsulta = "SELECT turma.id_turma, sala.num_sala, turma.nome_turma, turma.id_turma, reserva.id_reserva, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
@@ -95,8 +99,20 @@
 <!-- COMEÇO FILTRO SELECT -->
 <section class="container text-left">
   <h1 class="text-center mt-4 mb-3 tituloCadastro">Reserva</h1>
-              
+        
   <div class="row align-items-center">
+
+    <div class="col-lg-2 mb-3 mb-lg-0">
+      <select id="nomeCurso" class="form-select filtro">
+      <option>Curso</option>
+      <?php foreach($resultCurso as $exibir):?>
+        <option value="<?php echo $exibeCurso['id_curso']?>">
+          <?=$exibir['nome_curso']?>
+        </option>
+        <?php endforeach;?>
+      </select>
+    </div>
+
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="nomeTurma" class="form-select filtro">
       <option>Turma</option>
@@ -123,9 +139,6 @@
       <input type="date" name="data" required class="form-control filtro">
     </div>
                 
-    <div class="col-lg-2 mb-3 mb-lg-0">
-      <input type="time" name="time" class="form-control filtro">
-    </div>
                 
     <div class="col-lg-2 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
       <!-- Botão para Relatório -->

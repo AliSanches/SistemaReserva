@@ -1,3 +1,22 @@
+<?php
+
+  require_once('./conexao/conecta.php');
+
+  //Numero itens por página
+  $itensPorPagina = 4;
+
+  //Pagina atual
+  $paginaAtual = isset($_GET['pag']) ? $_GET['pag'] : 1;
+
+  //Calcular o indice de inicio dos itens a serem exibidos na pagina atual
+  $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
+
+  $sqlConsulta = "SELECT sala.num_sala, curso.nome_curso, turma.nome_turma, reserva.hora_inicio, reserva.hora_termino, reserva.data_inicio, reserva.data_termino FROM reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN curso ON turma.id_curso = curso.id_curso LIMIT $indiceInicio, $itensPorPagina";
+  $resultConsulta = mysqli_query($conexao, $sqlConsulta);
+  $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
+
+?>
+
 <!doctype html>
 <html lang="pt-br">
   <head>
@@ -70,82 +89,81 @@
     <!-- COMEÇO FILTRO SELECT -->
     <section class="container">
 
-            <h1 class="text-center mt-4 mb-3 tituloCadastro">Home</h1>
+      <h1 class="text-center mt-4 mb-3 tituloCadastro">Home</h1>
 
-            <div class="btn-group filtro ml-5">
-              <button type="button" class="btn pr-5 btn-outline-dark text-left">Selecione</button>
-              <button type="button" class="btn btn-secondary px-3 btn-outline-dark dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
-                <span class="sr-only">Dropdown</span>
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                <a class="dropdown-item" href="index.html">Salas Reservadas</a>
-                <a class="dropdown-item" href="salasDisponiveis.php">Salas Disponiveis</a>
-            </div>
+      <div class="btn-group filtro ml-5">
+        <button type="button" class="btn pr-5 btn-outline-dark text-left">Selecione</button>
+        <button type="button" class="btn btn-secondary px-3 btn-outline-dark dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+          <span class="sr-only">Dropdown</span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
+        <a class="dropdown-item" href="index.html">Salas Reservadas</a>
+        <a class="dropdown-item" href="salasDisponiveis.php">Salas Disponiveis</a>
+        </div>
     </section>
     <!-- FILTRO FILTRO SELECT -->
 
     <!-- COMEÇO CONTEUDO -->
-    <section class=" principalHome container">
-        <table class="table table-responsive-sm conteudo mt-3 mb-3 text-center">
-            <thead>
-              <tr>
-                <th>Sala</th>
-                <th>Curso</th>
-                <th>Turma</th>
-                <th>Horário</th>
-                <th>Data</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>302</td>
-                <td>Técnico em Infomática</td>
-                <td>45</td>
-                <td>13:30 a 17:30</td>
-                <td>12/12/2023</td>
-              </tr>
-              <tr>
-                <td>402</td>
-                <td>Design de Interiores</td>
-                <td>46</td>
-                <td>13:30 a 17:30</td>
-                <td>12/12/2023</td>
-              </tr>
-              <tr>
-                <td>420</td>
-                <td>Farmacia</td>
-                <td>41</td>
-                <td>13:30 a 17:30</td>
-                <td>12/12/2023</td>
-              </tr>
-            </tbody>
-          </table>
+    <section class=" principal container">
+    <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+    <thead>
+        <th scope="col">Sala</th>
+        <th scope="col">Curso</th>
+        <th scope="col">Turma</th>
+        <th scope="col">Horário Início</th>
+        <th scope="col">Horário Término</th>
+        <th scope="col">Data Início</th>
+        <th scope="col">Data Término</th>
+      </tr>
+    </thead>
+    <tbody>
 
-          <!-- PAGINAÇÃO -->
-          <section class="navegacao mt-3">
-            <nav aria-label="Navegação de página exemplo">
-              <ul class="pagination d-flex justify-content-center">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Anterior">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">Anterior</span>
-                  </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Próximo">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">Próximo</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </section>
-          <!-- FINAL PAGINAÇÃO -->
-    </section>
-    <!-- FINAL CONTEUDO -->
+      <?php foreach ($resultConsulta as $exibir): ?>
+      <tr>
+        <td><?=$exibir['num_sala'];?></td>
+        <td><?=$exibir['nome_curso'];?></td>
+        <td><?=$exibir['nome_turma'];?></td>
+        <td><?=$exibir['hora_inicio'];?></td>
+        <td><?=$exibir['hora_termino'];?></td>
+        <td><?=$exibir['data_inicio'];?></td>
+        <td><?=$exibir['data_termino'];?></td>
+      </tr>
+      <?php endforeach; ?>
+      
+    </tbody>
+  </table>
+
+<!-- PAGINAÇÃO -->
+<section class="navegacao mt-3">
+    <nav aria-label="Navegação de paginas">
+      <ul class="pagination d-flex justify-content-center">
+        <li class="page-item">
+          <?php if($indiceInicio>1):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual-1?>" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+            <?php endif;?>  
+            <span class="sr-only">Anterior</span>
+          </a>
+
+        </li>
+
+        <li class="page-item"><a class="page-link" href="#"><?=$paginaAtual?></a></li>
+
+        <li class="page-item">
+          <?php if($indiceInicio<$itensPorPagina):?>
+          <a class="page-link" href="?pag=<?=$paginaAtual+1?>" aria-label="Próximo">
+            <span aria-hidden="true">&raquo;</span>
+            <?php endif;?>
+            <span class="sr-only">Próximo</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+</section>
+<!-- FINAL PAGINAÇÃO -->
+
+</section>
+<!-- FINAL CONTEUDO -->
 
     <!-- COMEÇO RODAPÉ -->
     <footer class="rodape fixacao">

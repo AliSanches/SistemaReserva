@@ -151,7 +151,6 @@
 
   
 <!-- COMEÇO CONTEUDO -->
-
   <table class="table w-100 table-responsive-sm conteudo mt-2 mb-2 text-center">
     <thead>
       <tr>
@@ -164,8 +163,8 @@
       </tr>
     </thead>
       <tbody>
+        <?php foreach($resultadoPag as $exibir):?>
           <tr>
-          <?php foreach($resultadoPag as $exibir):?>
             <td><?=$exibir['nome_sala'] ?></td>
             <td><?=$exibir['num_sala'] ?></td>
             <td><?=$exibir['capacidade'] ?></td>

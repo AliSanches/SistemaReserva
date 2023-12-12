@@ -21,22 +21,13 @@
 
     if(isset($_POST['cadastrar']) && $_POST['cadastrar'] === 'inserir_cadastro') {
 
-        $idReserva = mysqli_real_escape_string($conexao, $_POST['id_reserva']);
         $dataInicio = mysqli_real_escape_string($conexao, $_POST['data_inicio']);
         $dataTermino = mysqli_real_escape_string($conexao, $_POST['data_termino']);
         $horaInicio = mysqli_real_escape_string($conexao, $_POST['hora_inicio']);
         $horaTermino = mysqli_real_escape_string($conexao, $_POST['hora_termino']);
-        $segunda = $_POST['segunda'];
-        $terca = $_POST['terca'];
-        $quarta = $_POST['quarta'];
-        $quinta = $_POST['quinta'];
-        $sexta = $_POST['sexta'];
-        $sabado = $_POST['sabado'];
-        $status = true;
 
-        $sql = "INSERT INTO reserva (id_reserva, data_inicio, data_termino, 
-        hora_inicio, hora_termino, segunda, terca, quarta, quinta, sexta, sabado, status) VALUES ('$idReserva','$dataInicio', '$dataTermino', '$horaInicio', '$horaTermino', '$segunda', '$terca', '$quarta', '$quinta',
-        '$sexta', '$sabado', '$status')";
+        $sql = "INSERT INTO reserva (data_inicio, data_termino, 
+        hora_inicio, hora_termino) VALUES ('$dataInicio', '$dataTermino', '$horaInicio', '$horaTermino')";
 
         if(mysqli_query($conexao, $sql)) {
             header('Location:reserva.php');
@@ -123,72 +114,29 @@
             <form class="col-lg-8" method="POST">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                            <label for="curso_insere">Turma</label>
-                            <select id="curso_insere" class="form-select">  
+                        <label for="cursoSelect">Curso</label>
+                            <select class="form-select" id="cursoSelect">
+                                <?php foreach($resulCurso as $exibir):?>
+                                    <option value="<?php echo $exibirCurso['id_curso']?>"><?=$exibir['nome_curso']?></option>
+                                <?php endforeach;?>
+                            </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="turmaSelect">Turma</label>
+                            <select id="turmaSelect" class="form-select">  
                                 <?php foreach($resulTurma as $exibir):?>
                                     <option value="<?php echo $exibirReserva['id_reserva']?>"><?=$exibir['nome_turma']?></option>
                                 <?php endforeach;?>
                             </select>
                     </div>
-                    <div class="form-group col-md-5">
-                        <label for="nomeTurma_insere">Sala</label>
-                        <select id="curso_insere" class="form-select">
+                    
+                    <div class="form-group col-md-3">
+                        <label for="salaSelect">Sala</label>
+                        <select id="salaSelect" class="form-select">
                             <?php foreach($resulSala as $exibir):?>
                                 <option value="<?php echo $exibirSala['id_sala']?>"><?=$exibir['num_sala']?></option>
                             <?php endforeach;?>
                         </select>
-                    </div>
-                    
-                    <div class="form-group col-md-3">
-                        <label for="codOferta_insere">Curso</label>
-                        <select id="curso_insere" class="form-select">
-                            <?php foreach($resulCurso as $exibir):?>
-                                <option value="<?php echo $exibirCurso['id_curso']?>"><?=$exibir['nome_curso']?></option>
-                            <?php endforeach;?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Segunda-Feira
-                        </label>
-                        <input type="checkbox" name="segunda" value="1">
-                    </div>
-
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Terça-Feira
-                        </label>
-                        <input type="checkbox" name="terca" value="1">
-                    </div>
-
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Quarta-Feira
-                        </label>
-                        <input type="checkbox" name="quarta" value="1">
-                    </div>
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Quinta-Feira
-                        </label>
-                        <input type="checkbox" name="quinta" value="1">
-                    </div>
-
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Sexta-Feira
-                        </label>
-                        <input type="checkbox" name="sexta" value="1">
-                    </div>
-
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Sábado
-                        </label>
-                        <input type="checkbox" name="sabado" value="1">
                     </div>
                 </div>
 
