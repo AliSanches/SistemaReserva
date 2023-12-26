@@ -61,7 +61,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>

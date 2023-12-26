@@ -6,14 +6,23 @@
         $resultadoselect = mysqli_query($conexao, $sqlselect);
         $linhaselect = mysqli_fetch_assoc($resultadoselect);
 
-      // RECEBENDO INFORMACOES DA TURMA
-        if(isset($_GET['id_sala']) && $_GET['id_sala'] != '') {
 
-        $id = $_GET['id_sala'];
-    
-        $sql = "SELECT * FROM sala WHERE id_sala = $id";
-        $resultado = mysqli_query($conexao, $sql);
-        $linha = mysqli_fetch_assoc($resultado);
+        if(isset($_GET['id_sala'])){
+
+            $idSala = $_GET['id_sala'];
+
+            $sqlCon = "SELECT num_sala, capacidade FROM sala WHERE id_sala = $idSala";
+            $return = mysqli_query($conexao, $sqlCon);
+            $exibirSalaCap = mysqli_fetch_assoc($return);
+        }
+
+        if(isset($_GET['id_sala'])){
+
+            $idSala = $_GET['id_sala'];
+
+            $sqlCon = "SELECT comport_notebook FROM sala WHERE id_sala = $idSala";
+            $return = mysqli_query($conexao, $sqlCon);
+            $exibirNote = mysqli_fetch_assoc($return);
         }
 
         // RECEBENDO INFORMACOES DA TURMA
@@ -21,28 +30,31 @@
 
             $id = $_GET['id_sala'];
         
-            $sqlSala = "SELECT num_sala, capacidade, comport_notebook FROM sala WHERE id_sala = $id";
+            $sqlSala = "SELECT * FROM sala WHERE id_sala = $id";
             $resultadoSala = mysqli_query($conexao, $sqlSala);
             $exibeSala = mysqli_fetch_assoc($resultadoSala);
-            }
-
-      // SQL PARA ALTERAR INFORMAÇÃO
-    if(isset($_POST['alterar']) && $_POST['alterar'] === 'altera_sala') {
-
-        $id = $_POST['id_sala'];
-
-        $tipoSala = $_POST['tipoSala'];
-        $suportaCase = $_POST['suportaCase'];
-        $suportaNotebook = $_POST['suportaNotebook'];
-        $numeroSala = mysqli_real_escape_string($conexao, $_POST['numeroSala']);
-        $capacidade = mysqli_real_escape_string($conexao, $_POST['capacidade']);              
-    
-        $sql = "UPDATE sala SET tipo_sala = '$tipoSala', armario = '$suportaCase', comport_notebook = '$suportaNotebook', num_sala = '$numeroSala', capacidade = '$capacidade' WHERE id_sala = $id";
-    
-        if(mysqli_query($conexao, $sql)) {
-          header('Location:editar_sala.php');
         }
-      }
+
+        if(isset($_POST['alterar']) && $_POST['alterar'] === 'confirmar')
+    {
+        $idSala = $_GET['id_sala'];
+
+        $numero_de_sala = mysqli_real_escape_string($conexao, $_POST['num_sala']);
+        $capacidade = mysqli_real_escape_string($conexao, $_POST['capacidade']);
+        $suporte_case = $_POST['armario'];
+        $suporte_notebook = $_POST['comport_notebook'];
+
+        $sql = "UPDATE sala SET num_sala = '$numero_de_sala', capacidade = '$capacidade', armario = '$suporte_case', comport_notebook = '$suporte_notebook' WHERE id_sala = $idSala";
+
+        if(mysqli_query($conexao, $sql)) {
+
+        header('location:sala.php');
+        }
+        else 
+        {
+            die("Erro: " . $sql . "<br>" . mysqli_error($conexao));
+        }
+    }
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -72,7 +84,7 @@
     <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
             <div class="container">
                 <div class="logo d-flex justify-content-center">
-                    <a href="index.html">
+                    <a href="index.php">
                         <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                     </a>
                 </div>
@@ -91,7 +103,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -116,7 +128,7 @@
 </nav>
 <!-- FINAL NAVEGAÇÃO -->
 
-    <!-- COMEÇO CONTEUDO -->
+<!-- COMEÇO CONTEUDO -->
     <section class="principal container">
         <h1 class="text-center mt-5 mb-5 tituloCadastro">Editar Sala</h1>
 
@@ -124,62 +136,58 @@
             <div class="form-group row cadastro text-center">
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="tipoSala_insere" class="col-sm-4 col-form-label">Tipo da Sala</label>
+                    <label for="nometipoAltera" class="col-sm-4 col-form-label">Tipo da Sala</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="tipoSala" name="tipoSala">
-                            <option>Selecione</option>
+                        <select class="custom-select" id="nome_tipo" name="id_tipo_sala">
                             <?php do { ?>
-                            <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $linha['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
+                                <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $exibeSala['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
                             <?php } while ($linhaselect = mysqli_fetch_assoc($resultadoselect)) ?>
                           </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="caseSala_insere" class="col-sm-4 col-form-label">Case</label>
+                    <label for="armarioAltera" class="col-sm-4 col-form-label">Case</label>
                     <div class="col-sm-4 ">
                         <select class="custom-select" id="armario" name="armario">
-                            <option>Selecione</option>
                             <?php do { ?>
-                            <option value="sim" <?php if($linha['armario'] === 'sim') echo "selected" ?>>Sim</option>
-                            <option value="nao" <?php if($linha['armario'] === 'nao') echo "selected" ?>>Não</option>
-                            <?php } while ($linha = mysqli_fetch_assoc($resultado)) ?>
+                                <option value="sim" <?php if($exibeSala['armario'] === 'sim') echo "selected" ?>>Sim</option>
+                                <option value="nao" <?php if($exibeSala['armario'] === 'nao') echo "selected" ?>>Não</option>
+                            <?php } while ($exibeSala = mysqli_fetch_assoc($resultadoSala)) ?>
                           </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="comportaNote_insere" class="col-sm-4 col-form-label">Comporta Notebook</label>
+                    <label for="comportaAltera" class="col-sm-4 col-form-label">Comporta Notebook</label>
                     <div class="col-sm-4">
                         <select class="custom-select" id="comport_notebook" name="comport_notebook">
-                            <option>Selecione</option>
                             <?php do { ?>
-                            <option value="sim" <?php if($exibeSala['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
-                            <option value="nao" <?php if($exibeSala['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
-                            <?php } while ($exibeSala = mysqli_fetch_assoc($resultado)) ?>
+                                <option value="sim" <?php if($exibirNote['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
+                                <option value="nao" <?php if($exibirNote['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
+                            <?php } while ($exibirNote = mysqli_fetch_assoc($return)) ?>
                           </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="numSala_altera" class="col-sm-4 col-form-label">Número Sala</label>
+                    <label for="numeroAltera" class="col-sm-4 col-form-label">Número Sala</label>
                     <div class="col-sm-4">
-                        <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['num_sala']?>">         
+                        <input type="number" name="num_sala" id="num_sala" class="form-control" value="<?php echo $exibirSalaCap['num_sala']?>">         
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="numSala_altera" class="col-sm-4 col-form-label">Capacidade</label>
+                    <label for="capacidadeAltera" class="col-sm-4 col-form-label">Capacidade</label>
                     <div class="col-sm-4">
-                        <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['capacidade']?>">         
+                        <input type="number" id="capacidade" name="capacidade" class="form-control" value="<?php echo $exibirSalaCap['capacidade']?>">         
                     </div>
                 </div>
 
 
                 <div class="botao d-flex justify-content-center mt-5">
-                    <!-- Botão para acionar modal -->
-                    <input type="hidden" value="<?=$exibeSala['id_sala']?>">
-                    <button type="submit" name="alterar" value="altera_sala" class="btn botaoLaranja btn-lg mr-5">
+                <input type="hidden" name="id_sala" value="<?= isset($exibeSala['id_sala']) ? htmlspecialchars($exibeSala['id_sala']) : '' ?>">
+                    <button type="submit" name="alterar" value="confirmar" class="btn botaoLaranja btn-lg mr-5">
                         Editar
                     </button>
 
@@ -189,7 +197,7 @@
             </div>
         </form>
     </section>
-    <!-- FINAL CONTEUDO -->
+<!-- FINAL CONTEUDO -->
 
     <!-- COMEÇO RODAPÉ -->
     <footer class="rodape mt-5">

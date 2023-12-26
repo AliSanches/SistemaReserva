@@ -16,9 +16,12 @@
   $exibeCurso = mysqli_fetch_assoc($resultCurso);
 
   //Consulta SQL para obter os dados
-  $sqlConsulta = "SELECT turma.id_turma, sala.num_sala, turma.nome_turma, turma.id_turma, reserva.id_reserva, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
+  $sqlConsulta = "SELECT curso.nome_curso, turma.id_turma, sala.num_sala, turma.nome_turma, turma.id_turma, reserva.id_reserva, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN turma ON turma.id_turma = reserva.id_turma INNER JOIN curso ON reserva.id_curso = curso.id_curso LIMIT $indiceInicio, $itensPorPagina";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
   $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
+
+  // Contar o número total de registros
+  $totalRegistros = $conexao->query("SELECT COUNT(*) AS total FROM sala")->fetch_assoc()['total'];
 
 ?>
 <!doctype html>
@@ -52,7 +55,7 @@
   <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
         <div class="container">
             <div class="logo d-flex justify-content-center">
-                <a href="index.html">
+                <a href="index.php">
                     <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                 </a>
             </div>
@@ -71,7 +74,7 @@
   <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+        <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -156,6 +159,7 @@
   <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
       <tr>
+        <th scope="col">Curso</th>
         <th scope="col">Turma</th>
         <th scope="col">Sala</th>
         <th scope="col">Data Inicio</th>
@@ -166,8 +170,9 @@
       </tr>
     </thead>
     <tbody>
+    <?php foreach($resultConsulta as $exibir):?>
       <tr>
-        <?php foreach($resultConsulta as $exibir):?>
+        <td><?=$exibir['nome_curso']?></td>
         <td><?=$exibir['nome_turma']?></td>
         <td><?=$exibir['num_sala']?></td>
         <td><?=$exibir['data_inicio']?></td>
@@ -176,8 +181,8 @@
         <td><?=$exibir['hora_termino']?></td>
         <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva=<?=$exibir['id_reserva']?>">Editar</a></td>
         <td scope="col"><a class="btnLaranja" href="reserva_exclui.php?id_reserva=<?=$exibir['id_reserva']?>">Excluir</a></td>
-        <?php endforeach;?>
       </tr>
+      <?php endforeach;?>
     </tbody>
   </table>
 

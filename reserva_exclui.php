@@ -1,9 +1,46 @@
+<?php
+
+    require_once('./conexao/conecta.php');
+
+    $sqlCurso = "SELECT nome_curso, id_curso FROM curso";
+    $resultadoCurso = mysqli_query($conexao, $sqlCurso);
+    $exibirCurso = mysqli_fetch_assoc($resultadoCurso);
+
+    $sqlTurma = "SELECT nome_turma, id_turma FROM turma";
+    $resultadoTurma = mysqli_query($conexao, $sqlTurma);
+    $exibirTurma = mysqli_fetch_assoc($resultadoTurma);
+
+    $sqlSala = "SELECT num_sala, id_sala FROM sala";
+    $resultadoSala = mysqli_query($conexao, $sqlSala);
+    $exibirSala = mysqli_fetch_assoc($resultadoSala);
+
+    if(isset($_GET['id_reserva'])) {
+
+        $id = $_GET['id_reserva'];
+    
+        $sql = "SELECT * FROM reserva WHERE id_reserva = $id";
+        $resultado = mysqli_query($conexao, $sql);
+        $exibir = mysqli_fetch_assoc($resultado);
+    }
+
+    if(isset($_POST['alterar']) && $_POST['alterar'] === 'inserir_alteracao') {
+
+        $idReserva = $_POST['id_reserva'];
+
+        $sql = "DELETE FROM reserva WHERE id_reserva = $idReserva";
+
+        if(mysqli_query($conexao, $sql)) {
+            header('Location:reserva.php');
+        }
+    }
+?>
+
 <!doctype html>
 <html lang="pt-br">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reserva</title>
+    <title>Reserva Exclui</title>
     
     
     <!-- Font awesome -->
@@ -29,7 +66,7 @@
         <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
               <div class="container">
                   <div class="logo d-flex justify-content-center">
-                      <a href="index.html">
+                      <a href="index.php">
                           <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                       </a>
                   </div>
@@ -48,7 +85,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -73,123 +110,85 @@
 </nav>
 <!-- FINAL NAVEGAÇÃO -->
 
-    <!-- COMEÇO CONTEUDO -->
-    <section class="principal container fs-18">
+<!-- COMEÇO CONTEUDO -->
+<section class="principal container fs-18">
         <div class="row justify-content-center">
-            <h1 class="text-center mt-5 mb-5 tituloCadastro">Exclusão de Reserva</h1>
+            <h1 class="text-center mt-3 mb-5 tituloCadastro">Alterar Reserva</h1>
 
             <form class="col-lg-8" method="POST">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                            <label for="reservaTurma_exclui">Turma</label>
-                            <select id="reservaTurma_exclui" class="form-control" readonly>
-                                <option selected>Escolher...</option>
-                                <option>...</option>
+                        <label for="curso">Curso</label>
+                            <select class="form-select" id="cursoSelect" name="id_curso" disabled>
+
+                                <?php do { ?>
+
+                                    <option value="<?php echo $exibirCurso['id_curso']?>" <?php if($exibirCurso['id_curso'] == $exibir['id_curso'] ) echo "selected" ?>><?=$exibirCurso['nome_curso'] ?></option>
+
+                                <?php } while($exibirCurso = mysqli_fetch_assoc($resultadoCurso)) ?>
+
+                            </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="turma">Turma</label>
+                            <select id="turmaSelect" class="form-select" name="id_turma" disabled>
+                                
+                            <?php do { ?>
+
+                                <option value="<?php echo $exibirTurma['id_turma']?>" <?php if($exibirTurma['id_turma'] == $exibir['id_turma'] ) echo "selected" ?>><?=$exibirTurma['nome_turma'] ?></option>
+
+                            <?php } while($exibirTurma = mysqli_fetch_assoc($resultadoTurma)) ?>
+
                             </select>
                     </div>
                     
-                    <div class="form-group col-md-4">
-                        <label for="reservaSala_exclui">Sala</label>
-                        <select id="reservaSala_exclui" class="form-control" readonly>
-                            <option selected>Escolher...</option>
-                            <option>...</option>
-                        </select>
-                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="salaSelect">Sala</label>
+                            <select id="salaSelect" class="form-select" name="id_sala" disabled>
+                                
+                            <?php do { ?>
 
-                    <div class="form-group col-md-4">
-                        <label for="reservaCurso_exclui">Curso</label>
-                        <select id="reservaCurso_exclui" class="form-control" readonly>
-                            <option selected>Escolher...</option>
-                            <option>...</option>
-                        </select>
+                                <option value="<?php echo $exibirSala['id_sala']?>" <?php if($exibirSala['id_sala'] == $exibir['id_sala'] ) echo "selected" ?>><?=$exibirSala['num_sala'] ?></option>
+
+                            <?php } while($exibirSala = mysqli_fetch_assoc($resultadoSala)) ?>
+
+                            </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-6">
-                        <label for="dataInicio_exclui" class="d-flex">Data Início</label>
-                        <input type="date" class="form-control" readonly>
+                        <label for="data_inicio" class="d-flex">Data Início</label>
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="<?php echo $exibir['data_inicio']?>" disabled>
                     </div>
 
                     <div class="col-6">
-                        <label for="horaInicio_exclui" class="d-flex mt-0">Hora Início</label>
-                        <input type="time" class="mt-0 centro form-control" readonly>
+                        <label for="hora_inicio" class="d-flex mt-0">Hora Início</label>
+                        <input type="time" class="mt-0 centro form-control" id="hora_inicio" name="hora_inicio" value="<?php echo $exibir['hora_inicio']?>" disabled>
                     </div>
 
                     <div class="col-6 mt-3">
-                        <label for="dataTermino_exclui" class="d-flex">Data Término</label>
-                        <input type="date" class="form-control" readonly>
+                        <label for="data_termino" class="d-flex">Data Término</label>
+                        <input type="date" class="form-control" id="data_termino" name="data_termino" value="<?php echo $exibir['data_termino']?>" disabled>
                     </div>
 
                     <div class="col-6">
-                        <label for="horaTermino_exclui" class="d-flex mt-3">Hora Término</label>
-                        <input type="time" class="mt-2 centro form-control" readonly>
+                        <label for="hora_termino" class="d-flex mt-3">Hora Término</label>
+                        <input type="time" class="mt-2 centro form-control" id="hora_termino" name="hora_termino" value="<?php echo $exibir['hora_termino']?>" disabled>
                     </div>
                 </div>
                
-                <div class=" d-flex justify-content-center mt-5">
-                    <!-- Botão para acionar modal -->
-                    <button type="button" class="btn botaoLaranja btn-lg mr-5" data-toggle="modal" data-target="#Modalsala_Exclui">
+                <div class="d-flex justify-content-center mt-5 mb-3">
+                    <input type="hidden" name="id_reserva" value="<?=$exibir['id_reserva']?>">
+                    <button type="submit" name="alterar" value="inserir_alteracao" class="btn botaoLaranja btn-lg mr-5">
                         Excluir
                     </button>
 
                     <!-- Botão para voltar a home -->
                     <a href="reserva.php" class="btn botaoCinza btn-lg">Voltar</a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="Modalsala_Exclui" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="TituloModalCentralizado"> 
-                                        <i class="fa-regular fa-trash-can"></i>
-                                        Exclusão
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body my-5 text-center">
-                                    Deseja realmente EXCLUIR este curso
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-                                    <button type="button" class="btn botaoLaranja px-3" data-toggle="modal" data-target="#Modalsala_excluido">Excluir</button>
-                                    <button type="button" class="btn px-3" data-dismiss="modal">Cancelar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="Modalsala_excluido" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="TituloModalCentralizado"> 
-                                        <i class="fa-regular fa-trash-can"></i>
-                                        Exclusão
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body my-5 text-center">
-                                    Excluido com sucesso!
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-                                    <button type="button" class="btn botaoLaranja px-5" data-dismiss="modal">OK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
 </section>
 <!-- FINAL CONTEUDO -->
 

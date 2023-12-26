@@ -51,6 +51,8 @@ $pag = 1;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="./css/style.css">
+
+    <script src="update_curso.js"></script>
   </head>
   <body>
 
@@ -59,7 +61,7 @@ $pag = 1;
     <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
       <div class="container">
         <div class="logo d-flex justify-content-center">
-          <a href="index.html">
+          <a href="index.php">
             <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
           </a>
         </div>
@@ -78,7 +80,7 @@ $pag = 1;
   <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+        <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -110,7 +112,7 @@ $pag = 1;
     <div class="row align-items-center">
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
-        <select id="reserva" class="form-select filtro">
+        <select id="selectCurso" class="form-select filtro">
           <option selected>Nome do curso</option>
           <?php foreach($resultadoAll as $exibirNome):?>
           <option><?=$exibirNome['nome_curso']?></option>
@@ -119,7 +121,7 @@ $pag = 1;
       </div>
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
-        <select id="reserva" class="form-select filtro">
+        <select id="selectTipoCurso" class="form-select filtro">
           <option selected>Tipo do curso</option>
           <?php foreach($resultadoAll as $exibirNome):?>
           <option><?=$exibirNome['nome_tipo']?></option>

@@ -1,32 +1,58 @@
-<?php 
+<?php  
 
     require_once('./conexao/conecta.php');
 
-    $sqlselect = "SELECT * FROM tipo_sala";
-    $resultadoselect = mysqli_query($conexao, $sqlselect);
-    $linhaselect = mysqli_fetch_assoc($resultadoselect);
+        $sqlselect = "SELECT * FROM tipo_sala";
+        $resultadoselect = mysqli_query($conexao, $sqlselect);
+        $linhaselect = mysqli_fetch_assoc($resultadoselect);
 
-    // RECEBENDO INFORMACOES DA TURMA
-    if(isset($_GET['id_sala']) && $_GET['id_sala'] != '') {
 
-        $id = $_GET['id_sala'];
-    
-        $sql = "SELECT * FROM sala WHERE id_sala = $id";
-        $resultadoSala = mysqli_query($conexao, $sql);
-        $exibeSala = mysqli_fetch_assoc($resultadoSala);
-    }
+        if(isset($_GET['id_sala'])){
 
-    //REALIZANDO A EXCLUSÃO
-    if(isset($_POST['remove']) && $_POST['remove'] === 'sim') {
-       
-        $id = $_POST['id_sala'];
+            $idSala = $_GET['id_sala'];
 
-        $status = false;
+            $sqlCon = "SELECT num_sala, capacidade FROM sala WHERE id_sala = $idSala";
+            $return = mysqli_query($conexao, $sqlCon);
+            $exibirSalaCap = mysqli_fetch_assoc($return);
+        }
 
-        $sql = "UPDATE sala SET status = 0 WHERE id_sala = $id ";
+        if(isset($_GET['id_sala'])){
+
+            $idSala = $_GET['id_sala'];
+
+            $sqlCon = "SELECT comport_notebook FROM sala WHERE id_sala = $idSala";
+            $return = mysqli_query($conexao, $sqlCon);
+            $exibirNote = mysqli_fetch_assoc($return);
+        }
+
+        // RECEBENDO INFORMACOES DA TURMA
+        if(isset($_GET['id_sala']) && $_GET['id_sala'] != '') {
+
+            $id = $_GET['id_sala'];
+        
+            $sqlSala = "SELECT * FROM sala WHERE id_sala = $id";
+            $resultadoSala = mysqli_query($conexao, $sqlSala);
+            $exibeSala = mysqli_fetch_assoc($resultadoSala);
+        }
+
+        if(isset($_POST['alterar']) && $_POST['alterar'] === 'confirmar')
+    {
+        $idSala = $_GET['id_sala'];
+
+        $numero_de_sala = mysqli_real_escape_string($conexao, $_POST['num_sala']);
+        $capacidade = mysqli_real_escape_string($conexao, $_POST['capacidade']);
+        $suporte_case = $_POST['armario'];
+        $suporte_notebook = $_POST['comport_notebook'];
+
+        $sql = "DELETE FROM sala WHERE id_sala = $idSala";
 
         if(mysqli_query($conexao, $sql)) {
-        header('Location:sala.php');
+
+        header('location:sala.php');
+        }
+        else 
+        {
+            die("Erro: " . $sql . "<br>" . mysqli_error($conexao));
         }
     }
 ?>
@@ -58,7 +84,7 @@
         <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
               <div class="container">
                   <div class="logo d-flex justify-content-center">
-                      <a href="index.html">
+                      <a href="index.php">
                           <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                       </a>
                   </div>
@@ -77,7 +103,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -102,65 +128,66 @@
 </nav>
 <!-- FINAL NAVEGAÇÃO -->
 
-    <!-- COMEÇO CONTEUDO -->
-    <section class="principal container">
+ <!-- COMEÇO CONTEUDO -->
+ <section class="principal container">
         <h1 class="text-center mt-5 mb-5 tituloCadastro">Excluir Sala</h1>
 
         <form method="POST">
             <div class="form-group row cadastro text-center">
-            
+
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="tipoSala_insere" class="col-sm-4 col-form-label">Tipo da Sala</label>
-                    <div class="col-sm-4" >
-                        <select class="custom-select" id="tipoSala_insere" readonly>
-                        <?php do { ?>
-                            <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $exibeSala['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
-                        <?php } while ($linhaselect = mysqli_fetch_assoc($resultadoselect)) ?>
-                        </select>
+                    <label for="nometipoAltera" class="col-sm-4 col-form-label">Tipo da Sala</label>
+                    <div class="col-sm-4 ">
+                        <select class="custom-select" id="nome_tipo" name="id_tipo_sala">
+                            <?php do { ?>
+                                <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $exibeSala['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
+                            <?php } while ($linhaselect = mysqli_fetch_assoc($resultadoselect)) ?>
+                          </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="caseSala_insere" class="col-sm-4 col-form-label">Case</label>
+                    <label for="armarioAltera" class="col-sm-4 col-form-label">Case</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="suporte_notebook" name="suporte_notebook" readonly>
+                        <select class="custom-select" id="armario" name="armario">
                             <?php do { ?>
                                 <option value="sim" <?php if($exibeSala['armario'] === 'sim') echo "selected" ?>>Sim</option>
                                 <option value="nao" <?php if($exibeSala['armario'] === 'nao') echo "selected" ?>>Não</option>
                             <?php } while ($exibeSala = mysqli_fetch_assoc($resultadoSala)) ?>
-                        </select>            
+                          </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="comportaNote_insere" class="col-sm-4 col-form-label">Comporta Notebook</label>
+                    <label for="comportaAltera" class="col-sm-4 col-form-label">Comporta Notebook</label>
                     <div class="col-sm-4">
-                        <select class="custom-select" id="suporte_notebook" name="suporte_notebook" readonly>
-                        <?php do { ?>
-                            <option value="sim" <?php if($exibeSala['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
-                            <option value="nao" <?php if($exibeSala['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
-                        <?php } while ($exibeSala = mysqli_fetch_assoc($resultado)) ?>
-                        </select>
+                        <select class="custom-select" id="comport_notebook" name="comport_notebook">
+                            <?php do { ?>
+                                <option value="sim" <?php if($exibirNote['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
+                                <option value="nao" <?php if($exibirNote['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
+                            <?php } while ($exibirNote = mysqli_fetch_assoc($return)) ?>
+                          </select>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="numSala_insere" class="col-sm-4 col-form-label">Número da Sala</label>
+                    <label for="numeroAltera" class="col-sm-4 col-form-label">Número Sala</label>
                     <div class="col-sm-4">
-                    <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['num_sala']?>">
+                        <input type="number" name="num_sala" id="num_sala" class="form-control" value="<?php echo $exibirSalaCap['num_sala']?>">         
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
-                    <label for="capacidadeSala_insere" class="col-sm-4 col-form-label">Capacidade Aluno</label>
-                    <div class="col-sm-4 ">
-                    <input type="number" name="numSala_altera" id="numSala_altera" class="form-control" value="<?php echo $exibeSala['capacidade']?>"> 
+                    <label for="capacidadeAltera" class="col-sm-4 col-form-label">Capacidade</label>
+                    <div class="col-sm-4">
+                        <input type="number" id="capacidade" name="capacidade" class="form-control" value="<?php echo $exibirSalaCap['capacidade']?>">         
                     </div>
                 </div>
 
-                <div class="botao d-flex justify-content-center mt-5 bt-3">
-                    <!-- Botão para acionar modal -->
-                    <button type="button" class="btn botaoLaranja btn-lg mr-5">
+
+                <div class="botao d-flex justify-content-center mt-5">
+                <input type="hidden" name="id_sala" value="<?= isset($exibeSala['id_sala']) ? htmlspecialchars($exibeSala['id_sala']) : '' ?>">
+                    <button type="submit" name="alterar" value="confirmar" class="btn botaoLaranja btn-lg mr-5">
                         Excluir
                     </button>
 
@@ -168,9 +195,9 @@
                     <a href="sala.php" class="btn botaoCinza btn-lg">Voltar</a>
                 </div>
             </div>
-          </form>
+        </form>
     </section>
-    <!-- FINAL CONTEUDO -->
+<!-- FINAL CONTEUDO -->
 
     <!-- COMEÇO RODAPÉ -->
     <footer class="rodape mt-5">
