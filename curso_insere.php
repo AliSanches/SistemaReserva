@@ -1,6 +1,6 @@
 <?php 
 
-    require_once('../conexao/conecta.php');
+    require_once('./conexao/conecta.php');
 
     $sqltipo = "SELECT * FROM tipo_curso ORDER BY nome_tipo ASC";
     $resultadotipo = mysqli_query($conexao, $sqltipo);

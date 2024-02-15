@@ -12,9 +12,12 @@ require_once('./conexao/conecta.php');
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
   //Consulta SQL para obter os dados
-  $sql = "SELECT turma.nome_turma, turma.codigo_Oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio, turma.id_turma, curso.nome_curso FROM turma INNER JOIN curso ON curso.id_curso = turma.id_curso LIMIT $indiceInicio, $itensPorPagina";
+  $sql = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.codigo_oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso ORDER BY curso.nome_curso LIMIT $indiceInicio, $itensPorPagina";
   $result = mysqli_query($conexao, $sql);
   $row = mysqli_fetch_assoc($result);
+
+  $sqlConsulta = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.codigo_oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso";
+  $resultConsulta = mysqli_query($conexao, $sqlConsulta);
 
   // Contar o número total de registros
   $totalRegistros = $conexao->query("SELECT COUNT(*) AS total FROM turma")->fetch_assoc()['total'];
@@ -22,7 +25,6 @@ require_once('./conexao/conecta.php');
   $sqlTipo = "SELECT nome_tipo FROM tipo_curso";
   $resultTipo = mysqli_query($conexao, $sqlTipo);
   $exibeTipo = mysqli_fetch_assoc($resultTipo);
- 
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -42,6 +44,9 @@ require_once('./conexao/conecta.php');
 
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="./js/refreshTurma.js" defer></script>
+    <script src="./js/jquery.js" defer></script>
 
     <link rel="stylesheet" href="./css/style.css">
   </head>
@@ -102,19 +107,19 @@ require_once('./conexao/conecta.php');
   <div class="row align-items-center">
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Nome da turma</option>
-        <?php foreach($result as $exibirNome):?>
-          <option><?=$exibirNome['nome_curso']?></option>
+      <select id="selectCurso" class="form-select filtro">
+        <option selected>Nome do Curso</option>
+        <?php foreach($resultConsulta as $exibir):?>
+          <option value="<?php echo $exibirNome['id_curso']?>" ><?=$exibir['nome_curso']?></option>
         <?php endforeach;?>
       </select>
     </div>
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Selecionar por curso</option>
-        <?php foreach($resultTipo as $executa):?>
-          <option><?=$executa['nome_tipo']?></option>
+      <select id="selectTurmas" class="form-select filtro">
+        <option selected>Turmas</option>
+        <?php foreach($result as $executa):?>
+          <option><?=$executa['nome_turma']?></option>
         <?php endforeach;?>
       </select>
     </div>
@@ -134,10 +139,10 @@ require_once('./conexao/conecta.php');
   <!-- FILTRO FILTRO SELECT -->
     
   <!-- COMEÇO CONTEUDO -->
-  <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+  <table id="tabelaTurma" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
         <tr>
-            <th scope="col">Curso</th>
+            <th scope="col">Nome do Curso</th>
             <th scope="col">Nome da Turma</th>
             <th scope="col">Horario Inicio</th>
             <th scope="col">Horario Final</th>

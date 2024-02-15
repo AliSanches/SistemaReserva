@@ -50,9 +50,11 @@ $pag = 1;
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <script src="./js/refreshCurso.js" defer></script>
+    <script src="./js/jquery.js" defer></script>
+
     <link rel="stylesheet" href="./css/style.css">
 
-    <script src="update_curso.js"></script>
   </head>
   <body>
 
@@ -113,35 +115,26 @@ $pag = 1;
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
         <select id="selectCurso" class="form-select filtro">
-          <option selected>Nome do curso</option>
-          <?php foreach($resultadoAll as $exibirNome):?>
-          <option><?=$exibirNome['nome_curso']?></option>
-          <?php endforeach;?>
+          <option value="valorPadrao">Nome do curso</option>
+            <?php foreach($resultadoAll as $exibirNome):?>
+              <option value="<?php echo $exibirNome['id_curso']?>"><?=$exibirNome['nome_curso']?></option>
+            <?php endforeach;?>
         </select>
       </div>
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
         <select id="selectTipoCurso" class="form-select filtro">
-          <option selected>Tipo do curso</option>
-          <?php foreach($resultadoAll as $exibirNome):?>
-          <option><?=$exibirNome['nome_tipo']?></option>
-          <?php endforeach;?>
+          <option value="valorPadraoTipo">Tipo do curso</option>
+            <?php foreach($resultadoAll as $exibirNome):?>
+              <option value="<?php echo $exibirNome['id_tipo_curso']?>"><?=$exibirNome['nome_tipo']?></option>
+            <?php endforeach;?>
         </select>
       </div>
-                
-      <div class="col-lg-2 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
-        <!-- Botão para Relatório -->
-        <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-          <i class="fa-solid fa-file-pdf"></i>
-          <a type="button" class="text-dark">Relatorio</a>
-        </button>
-      </div>
-    </div>  
     <!-- FILTRO FILTRO SELECT -->
     
 
 <!-- COMEÇO CONTEUDO -->
-  <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+  <table  id="tabelaCurso" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
       <tr>
         <th scope="col">Nome do Curso</th>
@@ -163,6 +156,7 @@ $pag = 1;
     </tbody>
 
   </table>
+<!-- FINAL CONTEUDO -->
 
 <!-- PAGINAÇÃO -->
   <section class="navegacao mt-3">
@@ -189,8 +183,8 @@ $pag = 1;
     </nav>
   </section>
   <!-- FINAL PAGINAÇÃO -->
+  
 </section>
-<!-- FINAL CONTEUDO -->
 
   <!-- COMEÇO RODAPÉ -->
   <footer class="rodape fixacao">

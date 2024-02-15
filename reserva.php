@@ -47,6 +47,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="./css/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="buscar_reserva.js"></script>
+
   </head>
   <body>
 
@@ -156,7 +161,7 @@
 
 <!-- COMEÇO CONTEUDO -->
 <section class="principal container">
-  <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+  <table id="tabelaDados" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
       <tr>
         <th scope="col">Curso</th>
@@ -170,8 +175,8 @@
       </tr>
     </thead>
     <tbody>
-    <?php foreach($resultConsulta as $exibir):?>
-      <tr>
+      <?php foreach($resultConsulta as $exibir):?>
+        <tr>
         <td><?=$exibir['nome_curso']?></td>
         <td><?=$exibir['nome_turma']?></td>
         <td><?=$exibir['num_sala']?></td>
@@ -222,12 +227,7 @@
     </footer>
     <!-- FINAL RODAPÉ -->
 
-    <!-- Bootstrap 4.1 -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
 
-    <!-- Bootstrap 5.3 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>
