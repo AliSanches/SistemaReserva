@@ -62,6 +62,8 @@
     <!-- Bootstrap 4.0 -->
     <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"/>
 
+    <script src="./js/jquery.js" defer></script>
+
     <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
@@ -108,7 +110,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -136,8 +138,8 @@
                     </div>
                     <div class="form-group col-md-5">
                         <label for="turma">Turma</label>
-                            <select id="turmaSelect" class="form-select" name="id_turma">
-                                
+                            <select id="turmaSelect" class="form-select" name="id_turma" disabled>
+
                             <?php do { ?>
 
                                 <option value="<?php echo $exibirTurma['id_turma']?>" <?php if($exibirTurma['id_turma'] == $exibir['id_turma'] ) echo "selected" ?>><?=$exibirTurma['nome_turma'] ?></option>

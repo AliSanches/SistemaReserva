@@ -93,7 +93,7 @@
         <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+        <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
       </li>
     </ul>
   </div>
@@ -119,7 +119,7 @@
               
     <div class="col-lg-3 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
-        <option selected>Capacidade</option>
+        <option selected>Capacidade Alunos</option>
         <?php foreach($resultadoPag as $exibir):?>
         <option>
           <?=$exibir['capacidade']?>
@@ -156,7 +156,7 @@
       <tr>
         <th scope="col">Tipo da Sala</th>
         <th scope="col">Sala</th>
-        <th scope="col">Capacidade</th>
+        <th scope="col">Capacidade Alunos</th>
         <th scope="col">Case</th>
         <th scope="col">Comporta Notebook</th>
         <th colspan="2" scope="col" class="text-center"><a class="btnLaranja" href="sala_insere.php">Inserir</a></th>

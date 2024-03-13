@@ -50,8 +50,6 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <script src="buscar_reserva.js"></script>
-
   </head>
   <body>
 
@@ -97,7 +95,7 @@
         <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+        <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
       </li>
     </ul>
   </div>
@@ -180,8 +178,8 @@
         <td><?=$exibir['nome_curso']?></td>
         <td><?=$exibir['nome_turma']?></td>
         <td><?=$exibir['num_sala']?></td>
-        <td><?=$exibir['data_inicio']?></td>
-        <td><?=$exibir['data_termino']?></td>
+        <td><?=date('d/m/Y', strtotime($exibir['data_inicio']));?></td>
+        <td><?=date('d/m/Y', strtotime($exibir['data_termino']));?></td>
         <td><?=$exibir['hora_inicio']?></td>
         <td><?=$exibir['hora_termino']?></td>
         <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva=<?=$exibir['id_reserva']?>">Editar</a></td>

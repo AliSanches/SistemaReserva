@@ -94,7 +94,7 @@ require_once('./conexao/conecta.php');
         <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+        <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
       </li>
   </div>
 </nav>
@@ -143,7 +143,7 @@ require_once('./conexao/conecta.php');
     <thead>
         <tr>
             <th scope="col">Nome do Curso</th>
-            <th scope="col">Nome da Turma</th>
+            <th scope="col">Número da Turma</th>
             <th scope="col">Horario Inicio</th>
             <th scope="col">Horario Final</th>
             <th scope="col">Data Inicio</th>
@@ -157,7 +157,7 @@ require_once('./conexao/conecta.php');
               <td><?=$dados['nome_turma'] ?></td>
               <td><?=$dados['horario_inicio'] ?></td>
               <td><?=$dados['horario_termino'] ?></td>
-              <td><?=$dados['data_inicio'] ?></td>
+              <td><?=date('d/m/Y', strtotime($dados['data_inicio'])); ?></td>
               <td><a  class="btnLaranja" href="turma_altera.php?id_turma=<?= $dados['id_turma'] ?>">Editar</a></td>
               <td><a class="btnLaranja" href="turma_exclui.php?id_turma=<?= $dados['id_turma'] ?>">Excluir</a></td>
             </tr>

@@ -121,7 +121,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -138,7 +138,7 @@
                 <div class="d-flex justify-content-center mb-3">
                     <label for="nometipoAltera" class="col-sm-4 col-form-label">Tipo da Sala</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="nome_tipo" name="id_tipo_sala">
+                        <select class="custom-select" id="nome_tipo" name="id_tipo_sala" disabled>
                             <?php do { ?>
                                 <option value="<?php $linhaselect['id_tipo_sala'] ?>" <?php if($linhaselect['id_tipo_sala'] == $exibeSala['id_tipo_sala']) echo "selected" ?> ><?php echo $linhaselect['nome_sala'] ?></option>
                             <?php } while ($linhaselect = mysqli_fetch_assoc($resultadoselect)) ?>
@@ -149,7 +149,7 @@
                 <div class="d-flex justify-content-center mb-3">
                     <label for="armarioAltera" class="col-sm-4 col-form-label">Case</label>
                     <div class="col-sm-4 ">
-                        <select class="custom-select" id="armario" name="armario">
+                        <select class="custom-select" id="armario" name="armario" disabled>
                             <?php do { ?>
                                 <option value="sim" <?php if($exibeSala['armario'] === 'sim') echo "selected" ?>>Sim</option>
                                 <option value="nao" <?php if($exibeSala['armario'] === 'nao') echo "selected" ?>>Não</option>
@@ -161,7 +161,7 @@
                 <div class="d-flex justify-content-center mb-3">
                     <label for="comportaAltera" class="col-sm-4 col-form-label">Comporta Notebook</label>
                     <div class="col-sm-4">
-                        <select class="custom-select" id="comport_notebook" name="comport_notebook">
+                        <select class="custom-select" id="comport_notebook" name="comport_notebook" disabled>
                             <?php do { ?>
                                 <option value="sim" <?php if($exibirNote['comport_notebook'] === 'sim') echo "selected" ?>>Sim</option>
                                 <option value="nao" <?php if($exibirNote['comport_notebook'] === 'nao') echo "selected" ?>>Não</option>
@@ -173,14 +173,14 @@
                 <div class="d-flex justify-content-center mb-3">
                     <label for="numeroAltera" class="col-sm-4 col-form-label">Número Sala</label>
                     <div class="col-sm-4">
-                        <input type="number" name="num_sala" id="num_sala" class="form-control" value="<?php echo $exibirSalaCap['num_sala']?>">         
+                        <input type="number" name="num_sala" id="num_sala" class="form-control" readonly value="<?php echo $exibirSalaCap['num_sala']?>">         
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center mb-3">
                     <label for="capacidadeAltera" class="col-sm-4 col-form-label">Capacidade</label>
                     <div class="col-sm-4">
-                        <input type="number" id="capacidade" name="capacidade" class="form-control" value="<?php echo $exibirSalaCap['capacidade']?>">         
+                        <input type="number" id="capacidade" name="capacidade" class="form-control" readonly value="<?php echo $exibirSalaCap['capacidade']?>">         
                     </div>
                 </div>
 

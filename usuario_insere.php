@@ -3,27 +3,27 @@
     date_default_timezone_set('America/Sao_Paulo');
     require_once('./conexao/conecta.php');
 
-        // SQL PARA CHAMAR O TIPO_SALA
-        $sqlsala = "SELECT * FROM tipo_sala";
-        $resultadosala = mysqli_query($conexao, $sqlsala);
-        $linhasala = mysqli_fetch_assoc($resultadosala);
+    $sqlUsuario = "SELECT * FROM usuario";
+    $resultUsuario = mysqli_query($conexao, $sqlUsuario);
+    $exibeUsuario = mysqli_fetch_assoc($resultUsuario);
 
-        if(isset($_POST['cadastro']) && $_POST['cadastro'] === 'cadastro_sala')
+
+    if(isset($_POST['cadastro']) && $_POST['cadastro'] === 'cadastro_usuario')
     {
-        $numero_de_sala = mysqli_real_escape_string($conexao, $_POST['numero_de_sala']);
-        $capacidade = mysqli_real_escape_string($conexao, $_POST['capacidade']);
-        $tipo_de_sala = $_POST['tipo_de_sala'];
-        $suporte_case = $_POST['suporte_case'];
-        $suporte_notebook = $_POST['suporte_notebook'];
-        $data = date('Y-m-d');
-        $hora = date('h:i:s');
-        $status = true;
+        $nome = mysqli_real_escape_string($conexao, $_POST['nome']);
+        $usuario = mysqli_real_escape_string($conexao, $_POST['usuario']);
+        $permissao = $_POST['tipo'];
+        $senha = $_POST['senha'];
 
-        $sql = "INSERT INTO sala (id_sala, num_sala, id_tipo_sala, capacidade, armario, comport_notebook, data_cadastro, hora_cadastro, status) 
-        VALUES ('', '$numero_de_sala', '$tipo_de_sala', '$capacidade', '$suporte_case', '$suporte_notebook', '$data', '$hora', '$status')";
+        $sql = "INSERT INTO usuario (nome, usuario, senha, tipo) 
+        VALUES ('$nome', '$usuario', '$senha', '$permissao')";
 
         if(mysqli_query($conexao, $sql)) {
-        header('Location:sala.php');
+            header('Location: usuario.php');
+        }
+        else
+        {
+            die("Erro: " . $sql . "<br>" . mysqli_error($conexao));
         }
     }
 ?>
@@ -32,7 +32,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Inserir sala</title>
+    <title>Inserir Usuário</title>
     
     <!-- Font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -92,7 +92,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.php">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -101,68 +101,54 @@
 
 <!-- COMEÇO CONTEUDO -->
 <section class="principal container">
-    <h1 class="text-center mt-5 mb-5 tituloCadastro">Cadastrar Sala</h1>
+    <h1 class="text-center mt-5 mb-5 tituloCadastro">Cadastrar Usuário</h1>
 
     <form method="POST">
         <div class="form-group row cadastro text-center">
         
-            <div class="d-flex justify-content-center mb-3">
-                <label for="tipoSala_insere" class="col-sm-4 col-form-label">Tipo da Sala</label>
+            <div class="d-flex justify-content-center mb-4">
+                <label for="tipoSala_insere" class="col-sm-4 col-form-label">Nome</label>
                 <div class="col-sm-4 ">
-                    <select class="custom-select" id="tipo_de_sala" name="tipo_de_sala">
-                        <option selected>Selecione</option>
-                            <?php do { ?>
-                            <option value="<?php echo $linhasala['id_tipo_sala'] ?>"><?php echo $linhasala['nome_sala'] ?></option>
-                            <?php } while($linhasala = mysqli_fetch_assoc($resultadosala)) ?>
-                        </select>
+                    <input type="text" class="form-control col-12" id="nome" name="nome">
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mb-3">
-                <label for="caseSala_insere" class="col-sm-4 col-form-label">Case</label>
+            <div class="d-flex justify-content-center mb-4">
+                <label for="caseSala_insere" class="col-sm-4 col-form-label">Usuário</label>
                 <div class="col-sm-4 ">
-                    <select class="custom-select" id="suporte_case" name="suporte_case">
-                        <option selected>Selecione</option>
-                        <option value="sim">Sim</option>
-                        <option value="nao">Não</option>
-                        </select>
+                    <input type="text" class="form-control col-12" id="usuario" name="usuario">
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mb-3">
-                <label for="comportaNote_insere" class="col-sm-4 col-form-label">Comporta Notebook</label>
+            <div class="d-flex justify-content-center mb-4">
+                <label for="comportaNote_insere" class="col-sm-4 col-form-label">Tipo</label>
                 <div class="col-sm-4">
-                    <select class="custom-select" id="suporte_notebook" name="suporte_notebook">
-                        <option selected>Selecione</option>
-                        <option value="sim">Sim</option>
-                        <option value="nao">Não</option>
-                        </select>
+                    <select class="custom-select" name="tipo">
+
+                        <?php foreach($resultUsuario as $exibir):?>
+                            <option value="<?=$exibir['tipo']?>"><?=$exibir['tipo']?></option>
+                        <?php endforeach; ?>
+
+                    </select>
                 </div>
             </div>
 
             <div class="d-flex justify-content-center mb-3">
-                <label for="numSala_insere" class="col-sm-4 col-form-label">Número da Sala</label>
+                <label for="numSala_insere" class="col-sm-4 col-form-label">Senha</label>
                 <div class="col-sm-4">
-                    <input type="name" class="form-control col-12" name="numero_de_sala" id="numero_de_sala">
+                    <input type="password" class="form-control col-12" name="senha" id="senha">
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mb-3">
-                <label for="capacidadeSala_insere" class="col-sm-4 col-form-label">Capacidade Aluno</label>
-                <div class="col-sm-4 ">
-                    <input type="text" class="form-control col-12" id="capacidade" name="capacidade">
-                </div>
-            </div>
-
-            <div class="botao d-flex justify-content-center mt-5 mt-3">
+            <div class="botao d-flex justify-content-center mt-5 mb-4">
                 <!-- Botão para acionar modal -->
-                <input type="hidden" name="cadastro" value="cadastro_sala">
+                <input type="hidden" name="cadastro" value="cadastro_usuario">
                 <button type="submit" class="btn botaoLaranja btn-lg mr-5">
                     Cadastrar
                 </button>
 
                 <!-- Botão para voltar a home -->
-                <a href="sala.php" class="btn botaoCinza btn-lg">Voltar</a>
+                <a href="usuario.php" class="btn botaoCinza btn-lg">Voltar</a>
 
             </div>
         </div>

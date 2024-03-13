@@ -17,10 +17,10 @@
 
   //INICIO -- CONSULTA PARA BUSCAR INFORMACOES 
   $pdo = new PDO("mysql:host=localhost;dbname=projeto;charset=utf8", "root", "");
-  $sql = $pdo->query("SELECT * FROM curso INNER JOIN tipo_curso ON curso.id_tipo_curso = tipo_curso.id_tipo_curso ORDER BY curso.nome_curso LIMIT $pagInicial, $pagLimite");
+  $sql = $pdo->query("SELECT * FROM usuario ORDER BY nome LIMIT $pagInicial, $pagLimite");
 
   //NUMEROS DE REGISTROS DENTRO DA TABELA
-  $contagemRegistros = $pdo->query("SELECT COUNT(id_curso) count FROM curso")->fetch()['count'];
+  $contagemRegistros = $pdo->query("SELECT COUNT(id_usuario) count FROM usuario")->fetch()['count'];
   
   //CEIL CONVERTE SEMPRE PARA UM VALOR INTEIRO | QUANTIDADE TOTAL DE PAGINAS QUE POSSUO
   $qtdPaginas = ceil($contagemRegistros / $pagLimite);
@@ -30,7 +30,7 @@
   //FINAL -- CONSULTA PARA BUSCAR INFORMACOES 
 
   //ATUALIZAR COM TODAS AS INFORMACOES
-  $conAll = $pdo->query("SELECT * FROM curso INNER JOIN tipo_curso ON curso.id_tipo_curso = tipo_curso.id_tipo_curso ORDER BY curso.nome_curso");
+  $conAll = $pdo->query("SELECT * FROM usuario ORDER BY nome");
   $resultadoAll = $conAll->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
@@ -40,7 +40,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Curso</title>
+    <title>Usuario</title>
     
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
@@ -113,24 +113,24 @@
 
 <!-- COMEÇO FILTRO SELECT -->
   <section class="principal container">
-    <h1 class="text-center mt-4 mb-3 tituloCadastro">Curso</h1>
+    <h1 class="text-center mt-4 mb-3 tituloCadastro">Usuario</h1>
 
     <div class="row align-items-center">
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
         <select id="selectCurso" class="form-select filtro">
-          <option value="valorPadrao">Nome do curso</option>
+          <option value="valorPadrao">Nome do Usuario</option>
             <?php foreach($resultadoAll as $exibirNome):?>
-              <option value="<?php echo $exibirNome['id_curso']?>"><?=$exibirNome['nome_curso']?></option>
+              <option value="<?php echo $exibirNome['id_usuario']?>"><?=$exibirNome['nome']?></option>
             <?php endforeach;?>
         </select>
       </div>
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
         <select id="selectTipoCurso" class="form-select filtro">
-          <option value="valorPadraoTipo">Tipo do curso</option>
+          <option value="valorPadraoTipo">Tipo do Usuario</option>
             <?php foreach($resultadoAll as $exibirNome):?>
-              <option value="<?php echo $exibirNome['id_tipo_curso']?>"><?=$exibirNome['nome_tipo']?></option>
+              <option value="<?php echo $exibirNome['id_usuario']?>"><?=$exibirNome['tipo']?></option>
             <?php endforeach;?>
         </select>
       </div>
@@ -141,19 +141,21 @@
   <table  id="tabelaCurso" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
       <tr>
-        <th scope="col">Nome do Curso</th>
-        <th scope="col">Tipo do Curso</th>
-        <th colspan="2" scope="col"><a class="btnLaranja" href="curso_insere.php">Inserir</a></th>
+        <th scope="col">Nome</th>
+        <th scope="col">Usuario</th>
+        <th scope="col">Permissão</th>
+        <th colspan="2" scope="col"><a class="btnLaranja" href="usuario_insere.php">Inserir</a></th>
       </tr>
     </thead>
     <tbody>
 
       <?php foreach ($resultados as $exibir): ?>
       <tr>
-        <td><?=$exibir['nome_curso'];?></td>
-        <td><?=$exibir['nome_tipo'];?></td>
-        <td><a class="btnLaranja" href="curso_altera.php?id_curso=<?=$exibir['id_curso']?>">Editar</a></td>
-        <td><a class="btnLaranja" href="curso_exclui.php?id_curso=<?=$exibir['id_curso']?>">Excluir</a></td>
+        <td><?=$exibir['nome'];?></td>
+        <td><?=$exibir['usuario'];?></td>
+        <td><?=$exibir['tipo'];?></td>
+        <td><a class="btnLaranja" href="usuario_altera.php?id_usuario=<?=$exibir['id_usuario']?>">Editar</a></td>
+        <td><a class="btnLaranja" href="usuario_exclui.php?id_usuario=<?=$exibir['id_usuario']?>">Excluir</a></td>
       </tr>
       <?php endforeach; ?>
       

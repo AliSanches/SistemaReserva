@@ -25,7 +25,6 @@
         $id_turma = isset($_POST['id_turma']) ? $_POST['id_turma'] : null;
         $id_sala = isset($_POST['id_sala']) ? $_POST['id_sala'] : null;
 
-
         $dataInicio = mysqli_real_escape_string($conexao, $_POST['data_inicio']);
         $dataTermino = mysqli_real_escape_string($conexao, $_POST['data_termino']);
         $horaInicio = mysqli_real_escape_string($conexao, $_POST['hora_inicio']);
@@ -35,7 +34,11 @@
         hora_inicio, hora_termino, id_curso, id_turma, id_sala) VALUES ('$dataInicio', '$dataTermino', '$horaInicio', '$horaTermino', '$id_curso', '$id_turma', '$id_sala')";
 
         if(mysqli_query($conexao, $sql)) {
-            header('Location:reserva.php');
+            header('Location: reserva.php');
+        }
+        else
+        {
+            die("Erro: " . $sql . "<br>" . mysqli_error($conexao));
         }
     }
 ?>
@@ -62,7 +65,8 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <script src="master.js"></script>
+    <script src="./js/refreshInserirReserva.js" defer></script>
+    <script src="./js/jquery.js" defer></script>
 
   </head>
   <body>
@@ -109,7 +113,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -134,7 +138,7 @@
                     <div class="form-group col-md-5">
                         <label for="turma">Turma</label>
                             <select id="turmaSelect" class="form-select" name="id_turma">
-                              
+
                             </select>
                     </div>
                     

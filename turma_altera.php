@@ -112,7 +112,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="login.php">Sair</a>
           </li>
         </ul>
     </div>

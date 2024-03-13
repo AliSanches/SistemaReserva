@@ -1,5 +1,16 @@
 <?php
 
+  session_start();
+  // print_r($_SESSION);
+
+  if((!isset($_SESSION['usuario']) == true) and (!isset($_SESSION['senha']) == true))
+  {
+    unset($_SESSION['usuario']);
+    unset($_SESSION['senha']);
+    header('Location: login.php');
+  }
+  $logado = $_SESSION['usuario'];
+
   require_once('./conexao/conecta.php');
 
   //Numero itens por página
@@ -14,6 +25,7 @@
   $sqlConsulta = "SELECT sala.num_sala, curso.nome_curso, turma.nome_turma, reserva.hora_inicio, reserva.hora_termino, reserva.data_inicio, reserva.data_termino FROM reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN curso ON turma.id_curso = curso.id_curso LIMIT $indiceInicio, $itensPorPagina";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
   $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
+
 
 ?>
 
@@ -79,7 +91,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -125,8 +137,8 @@
         <td><?=$exibir['nome_turma'];?></td>
         <td><?=$exibir['hora_inicio'];?></td>
         <td><?=$exibir['hora_termino'];?></td>
-        <td><?=$exibir['data_inicio'];?></td>
-        <td><?=$exibir['data_termino'];?></td>
+        <td><?=date('d/m/Y', strtotime($exibir['data_inicio']));?></td>
+        <td><?=date('d/m/Y', strtotime($exibir['data_termino']));?></td>
       </tr>
       <?php endforeach; ?>
       
