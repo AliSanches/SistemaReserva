@@ -1,6 +1,13 @@
 <?php 
+  require_once('./conexao/conecta.php');
 
-require_once('./conexao/conecta.php');
+  session_start();
+  // print_r($_SESSION);
+
+  if($_SESSION['tipo'] == 'com')
+  {
+    header('Location: index.php');
+  }
 
   //Numero itens por página
   $itensPorPagina = 4;

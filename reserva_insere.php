@@ -1,7 +1,14 @@
 <?php
-
     date_default_timezone_set('America/Sao_Paulo');
     require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     $sqlTurma = "SELECT id_turma, nome_turma FROM turma";
     $resulTurma = mysqli_query($conexao, $sqlTurma);

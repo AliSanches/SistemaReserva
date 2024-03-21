@@ -1,6 +1,13 @@
 <?php 
-
     require_once('././conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     $sqlSala = "SELECT id_sala, num_sala FROM sala";
     $resultadoSala = mysqli_query($conexao, $sqlSala);

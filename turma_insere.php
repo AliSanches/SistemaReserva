@@ -1,6 +1,13 @@
 <?php 
-
     require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     $sqlcurso = "SELECT id_curso, nome_curso FROM curso";
     $resultadocurso = mysqli_query($conexao, $sqlcurso);

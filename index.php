@@ -109,7 +109,7 @@
           <span class="sr-only">Dropdown</span>
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-        <a class="dropdown-item" href="index.html">Salas Reservadas</a>
+        <a class="dropdown-item" href="index.php">Salas Reservadas</a>
         <a class="dropdown-item" href="salasDisponiveis.php">Salas Disponiveis</a>
         </div>
     </section>

@@ -1,7 +1,13 @@
 <?php 
-
     require_once('./conexao/conecta.php');
 
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     // SQL PARA MOSTRAR O NOME DO CURSO NO BOTAO SELECT
     $sqlcurso = "SELECT id_curso, nome_curso FROM curso";

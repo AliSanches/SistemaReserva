@@ -1,6 +1,13 @@
 <?php  
-
     require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
         $sqlselect = "SELECT * FROM tipo_sala";
         $resultadoselect = mysqli_query($conexao, $sqlselect);

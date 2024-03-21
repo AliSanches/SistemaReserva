@@ -38,7 +38,7 @@
                 $_SESSION['usuario'] = $usuario;
                 $_SESSION['senha'] = $senha;
                 $_SESSION['tipo'] = 'com';
-                header('Location: curso.php');
+                header('Location: index.php');
             }
             elseif($coluna['tipo'] == 'adm')
             {

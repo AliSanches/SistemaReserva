@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 05-Fev-2024 às 14:53
+-- Generation Time: 21-Mar-2024 às 12:26
 -- Versão do servidor: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -44,12 +44,10 @@ INSERT INTO `curso` (`id_curso`, `status`, `nome_curso`, `data_cadastro`, `id_ti
 (10, b'0', 'Técnico de Informatica', '2023-08-16', 5),
 (13, b'0', 'Técnico em Moda Nuclear', '2023-08-17', 6),
 (16, b'1', 'Análise e Desenvolvimento de Sistemas', '2023-08-17', 7),
-(17, b'0', 'Análise de Suporte', '0000-00-00', 2),
-(18, b'0', 'Curso de Testes', '0000-00-00', 5),
 (19, b'0', 'Mecânico ', '0000-00-00', 2),
-(20, b'0', 'Testes', '0000-00-00', 2),
-(21, b'0', 'Teste02', '0000-00-00', 7),
-(22, b'0', 'Massoterapia', '0000-00-00', 2);
+(22, b'0', 'Massoterapia', '0000-00-00', 2),
+(24, b'0', 'Almoço', '0000-00-00', 1),
+(25, b'0', 'Cabeleileira', '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
@@ -77,9 +75,8 @@ CREATE TABLE `reserva` (
 --
 
 INSERT INTO `reserva` (`id_reserva`, `hora_cadastro`, `data_cadastro`, `data_inicio`, `data_termino`, `hora_inicio`, `hora_termino`, `status`, `id_turma`, `id_sala`, `id_usuario`, `id_curso`) VALUES
-(5, '2023-12-16 15:31:01', '2023-12-16 12:31:01', '2023-01-01', '2023-01-02', '18:00:00', '22:40:00', b'1', 20, 4, NULL, 20),
-(13, '2023-12-19 23:44:44', '2023-12-19 20:44:44', '2023-12-20', '2023-12-20', '12:00:00', '17:00:00', b'0', 20, 13, NULL, 20),
-(15, '2023-12-21 21:27:48', '2023-12-21 18:27:48', '2025-02-01', '2025-02-01', '08:00:00', '09:00:00', b'0', 22, 4, NULL, 22);
+(15, '2023-12-21 21:27:48', '2023-12-21 18:27:48', '2025-02-01', '2025-02-01', '08:00:00', '09:00:00', b'0', 22, 4, NULL, 22),
+(28, '2024-03-08 15:58:55', '2024-03-08 12:58:55', '2024-03-23', '2024-12-12', '08:00:00', '12:00:00', b'0', 23, 17, NULL, 24);
 
 -- --------------------------------------------------------
 
@@ -106,10 +103,11 @@ CREATE TABLE `sala` (
 
 INSERT INTO `sala` (`id_sala`, `status`, `num_sala`, `capacidade`, `armario`, `comport_notebook`, `data_cadastro`, `hora_cadastro`, `id_tipo_sala`, `id_turma`) VALUES
 (4, b'1', 20, 21, 'nao', 'sim', '2023-08-16', '07:16:45', 3, NULL),
-(12, b'1', 500, 10, 'nao', 'nao', '2023-12-16', '12:39:55', 1, 20),
 (13, b'1', 123, 10, 'nao', 'nao', '2023-12-16', '04:23:15', 1, NULL),
 (15, b'1', 304, 40, 'nao', 'nao', '2023-12-21', '11:54:14', 8, NULL),
-(16, b'1', 0, 0, 'nao', 'sim', '2023-12-22', '01:06:34', 1, NULL);
+(16, b'1', 0, 0, 'nao', 'sim', '2023-12-22', '01:06:34', 1, NULL),
+(17, b'1', 305, 20, 'sim', 'nao', '2024-03-07', '11:39:23', 1, NULL),
+(18, b'1', 205, 15, 'nao', 'nao', '2024-03-08', '03:27:41', 4, NULL);
 
 -- --------------------------------------------------------
 
@@ -200,12 +198,11 @@ CREATE TABLE `turma` (
 
 INSERT INTO `turma` (`id_turma`, `status`, `nome_turma`, `horario_inicio`, `horario_termino`, `ano`, `codigo_Oferta`, `id_curso`, `data_inicio`, `data_termino`, `data_cadastro`, `segunda`, `terca`, `quarta`, `quinta`, `sexta`, `sabado`) VALUES
 (16, b'1', 'Turma 10', '15:38:00', '18:41:00', 2023, 123121, 13, '2023-08-16', '2023-08-19', '2023-08-18', b'1', b'1', b'1', b'1', b'0', b'0'),
-(17, b'1', 'Turma 1', '19:00:00', '22:30:00', 2023, 343, 18, '2023-11-01', '2023-11-30', '2023-11-04', b'1', b'1', b'1', b'1', b'1', b'0'),
 (18, b'1', 'Turma 1', '18:00:00', '22:00:00', 2023, 987, 19, '2024-01-10', '2024-12-20', '2023-11-05', b'1', b'1', b'1', b'1', b'1', b'0'),
 (19, b'1', 'Turma 10', '08:00:00', '12:00:00', 2023, 878, 16, '2024-01-01', '2024-12-31', '2023-11-05', b'1', b'1', b'1', b'1', b'1', b'0'),
-(20, b'1', 'Turma 01', '11:11:00', '11:11:00', 2023, 1234, 20, '1111-11-11', '1111-11-11', '2023-12-16', b'1', b'1', b'1', b'1', b'1', b'0'),
-(21, b'1', 'Turma01', '11:11:00', '11:11:00', 2023, 1233, 21, '1111-11-11', '1111-11-11', '2023-12-16', b'1', b'1', b'1', b'1', b'1', b'1'),
-(22, b'1', 'Turma 01', '08:00:00', '09:00:00', 2023, 9878, 22, '2024-02-01', '2025-02-01', '2023-12-21', b'1', b'1', b'1', b'1', b'1', b'0');
+(22, b'1', 'Turma 01', '08:00:00', '09:00:00', 2023, 9878, 22, '2024-02-01', '2025-02-01', '2023-12-21', b'1', b'1', b'1', b'1', b'1', b'0'),
+(23, b'1', 'Turma 1', '08:00:00', '12:00:00', 2024, 55555, 24, '2024-03-24', '2024-12-12', '2024-03-07', b'0', b'0', b'0', b'1', b'1', b'1'),
+(24, b'1', 'Turma 1', '08:00:00', '12:00:00', 2024, 9876, 25, '2024-03-23', '2024-12-12', '2024-03-08', b'0', b'0', b'0', b'1', b'1', b'1');
 
 -- --------------------------------------------------------
 
@@ -229,8 +226,8 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`id_usuario`, `status`, `nome`, `usuario`, `senha`, `tipo`, `data_cadastro`) VALUES
 (1, b'1', 'Alisson', 'Alisson.Sanches', '1234', 'adm', '0000-00-00'),
-(2, b'1', 'Juliana', 'Juliana.Matos', '4321', 'com', '0000-00-00'),
-(3, b'0', 'Teste', 'Teste.Teste', '1233', 'com', NULL);
+(2, b'1', 'Juliana', 'Juliana.Sampaio', '4321', 'adm', '0000-00-00'),
+(5, b'0', 'Maycon', 'Maycon.Com', '1234', 'com', NULL);
 
 --
 -- Indexes for dumped tables
@@ -294,19 +291,19 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `curso`
 --
 ALTER TABLE `curso`
-  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `reserva`
 --
 ALTER TABLE `reserva`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `sala`
 --
 ALTER TABLE `sala`
-  MODIFY `id_sala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_sala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `tipo_curso`
@@ -324,13 +321,13 @@ ALTER TABLE `tipo_sala`
 -- AUTO_INCREMENT for table `turma`
 --
 ALTER TABLE `turma`
-  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

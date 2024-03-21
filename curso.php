@@ -3,6 +3,11 @@
   session_start();
   // print_r($_SESSION);
 
+  if($_SESSION['tipo'] == 'com')
+  {
+    header('Location: index.php');
+  }
+
   $pag = 1;
 
   //INICIO -- VERIFICACAO DE PAGINA
