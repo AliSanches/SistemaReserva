@@ -19,11 +19,11 @@
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
   //Consulta SQL para obter os dados
-  $sql = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.codigo_oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso ORDER BY curso.nome_curso LIMIT $indiceInicio, $itensPorPagina";
+  $sql = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso ORDER BY curso.nome_curso LIMIT $indiceInicio, $itensPorPagina";
   $result = mysqli_query($conexao, $sql);
   $row = mysqli_fetch_assoc($result);
 
-  $sqlConsulta = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.codigo_oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso";
+  $sqlConsulta = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
 
   // Contar o número total de registros
@@ -115,32 +115,30 @@
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
       <select id="selectCurso" class="form-select filtro">
-        <option selected>Nome do Curso</option>
+        <option value="valorPadrao">Nome do Curso</option>
         <?php foreach($resultConsulta as $exibir):?>
-          <option value="<?php echo $exibirNome['id_curso']?>" ><?=$exibir['nome_curso']?></option>
+          <option value="<?php echo $exibir['id_curso']?>" ><?=$exibir['nome_curso']?></option>
         <?php endforeach;?>
       </select>
     </div>
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
-      <select id="selectTurmas" class="form-select filtro">
-        <option selected>Turmas</option>
+      <select id="selectTurma" class="form-select filtro">
+        <option value="valorPadraoTurma">Turmas</option>
         <?php foreach($result as $executa):?>
-          <option><?=$executa['nome_turma']?></option>
+          <option value="<?php echo $executa['id_turma']?>"><?=$executa['nome_turma']?> </option>
         <?php endforeach;?>
       </select>
     </div>
                 
-    <div class="col-lg-2 mb-3 mb-lg-0">
-      <input type="time" name="time" class="form-control filtro">
-    </div>
-                
     <div class="col-lg-2 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
-      <!-- Botão para Relatório -->
-      <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-        <i class="fa-solid fa-file-pdf"></i>
-        <a type="button" class="text-dark">Relatorio</a>
-      </button>
+      <form action="./relatorioTurma/gerador-pdf.php" method="post">
+        <!-- Botão para Relatório -->
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
     </div>
   </div>
   <!-- FILTRO FILTRO SELECT -->

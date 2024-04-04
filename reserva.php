@@ -155,10 +155,12 @@
                 
     <div class="col-lg-2 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
       <!-- Botão para Relatório -->
-      <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-        <i class="fa-solid fa-file-pdf"></i>
-        <a type="button" class="text-dark">Relatorio</a>
-      </button>
+      <form action="./relatorioReserva/gerador-pdf.php" method="POST">
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
     </div>
   </div>
 </section>

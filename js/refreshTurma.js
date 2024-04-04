@@ -32,34 +32,35 @@ $(function () {
 });
 
 $(function () {
-    $("#selectTipoCurso").on("change", function() {
+    $("#selectTurma").on("change", function() {
 
         const valorSelecionado = $(this).val();
 
-        if(valorSelecionado == "valorPadraoTipo")
+        if(valorSelecionado == "valorPadraoTurma")
         {
             $.ajax({
 
                 type: "POST",
-                url: "./requestCurso/returnTipoPadrao.php",
-                data: {tipoCurso: valorSelecionado},
+                url: "./requestTurma/returnTurmaPadrao.php",
+                data: {turma: valorSelecionado},
                 success: function(data)
                 {
-                    $("#tabelaCurso").html(data);
+                    $("#tabelaTurma").html(data);
                 }
             });
         }
+        else
+        {
+            $.ajax({
 
-        $.ajax({
-
-            type: "POST",
-            url: "./requestCurso/returnTipo.php",
-            data: {tipoCurso: valorSelecionado},
-            success: function(data)
-            {
-                $("#tabelaCurso").html(data);
-            }
-        });
-
+                type: "POST",
+                url: "./requestTurma/returnTurma.php",
+                data: {turma: valorSelecionado},
+                success: function(data)
+                {
+                    $("#tabelaTurma").html(data);
+                }
+            });
+        }
     });
 });

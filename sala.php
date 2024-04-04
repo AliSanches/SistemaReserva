@@ -27,7 +27,7 @@
     $exibePag = mysqli_fetch_assoc($resultadoPag);
 
     // Consultas para pesquisa
-    $sqlPesquisa = "SELECT tipo_curso.nome_tipo FROM tipo_curso";
+    $sqlPesquisa = "SELECT tipo_curso.id_tipo_curso, tipo_curso.nome_tipo FROM tipo_curso";
     $resultPesquisa = mysqli_query($conexao, $sqlPesquisa);
     $exibePesquisa = mysqli_fetch_assoc($resultPesquisa);
 
@@ -55,6 +55,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="./css/style.css">
+
+    <script src="./js/refreshSala.js" defer></script>
+    <script src="./js/jquery.js" defer></script>
   </head>
   <body>
 
@@ -114,12 +117,10 @@
   <div class="row align-items-center">
 
     <div class="col-lg-3 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Tipo do Curso</option>
-        <?php foreach($resultPesquisa as $exibir):?>
-        <option>
-          <?=$exibir['nome_tipo']?>
-        </option>
+      <select id="selectSala" class="form-select filtro">
+        <option selected value="valorPadrao">Número da Sala</option>
+        <?php foreach($resultadoPag as $exibir):?>
+        <option value="<?php echo $exibir['id_sala']?>"><?=$exibir['num_sala']?></option>
         <?php endforeach;?>
       </select>
     </div>
@@ -135,30 +136,21 @@
       </select>
     </div>
               
-    <div class="col-lg-3 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Número da Sala</option>
-        <?php foreach($resultadoSala as $exibir):?>
-        <option>
-        <?=$exibir['num_sala']?>
-        </option>
-        <?php endforeach;?>
-      </select>
-    </div>
-              
     <div class="col-lg-3 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
-      <!-- Botão para Relatório -->
-      <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-        <i class="fa-solid fa-file-pdf"></i>
-        <a type="button" class="text-dark">Relatorio</a>
-      </button>
+      <form action="./relatorioSala/gerador-pdf.php" method="post">
+        <!-- Botão para Relatório -->
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
     </div>
   </div>
 <!-- FILTRO FILTRO SELECT -->
 
   
 <!-- COMEÇO CONTEUDO -->
-  <table class="table w-100 table-responsive-sm conteudo mt-2 mb-2 text-center">
+  <table id="tabelaSala" class="table w-100 table-responsive-sm conteudo mt-2 mb-2 text-center">
     <thead>
       <tr>
         <th scope="col">Tipo da Sala</th>

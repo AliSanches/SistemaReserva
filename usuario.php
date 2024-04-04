@@ -58,7 +58,7 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script src="./js/" defer></script>
+    <script src="./js/refreshUsuario.js" defer></script>
     <script src="./js/jquery.js" defer></script>
 
     <link rel="stylesheet" href="./css/style.css">
@@ -122,27 +122,26 @@
     <div class="row align-items-center">
                 
       <div class="col-lg-5 mb-3 mb-lg-0">
-        <select id="selectCurso" class="form-select filtro">
+        <select id="selectUsuario" class="form-select filtro">
           <option value="valorPadrao">Nome do Usuario</option>
             <?php foreach($resultadoAll as $exibirNome):?>
               <option value="<?php echo $exibirNome['id_usuario']?>"><?=$exibirNome['nome']?></option>
             <?php endforeach;?>
         </select>
       </div>
-                
-      <div class="col-lg-5 mb-3 mb-lg-0">
-        <select id="selectTipoCurso" class="form-select filtro">
-          <option value="valorPadraoTipo">Tipo do Usuario</option>
-            <?php foreach($resultadoAll as $exibirNome):?>
-              <option value="<?php echo $exibirNome['id_usuario']?>"><?=$exibirNome['tipo']?></option>
-            <?php endforeach;?>
-        </select>
-      </div>
-    <!-- FILTRO FILTRO SELECT -->
-    
-
+          
+      <div class="col-lg-7 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
+      <form action="./relatorioUsuario/gerador-pdf.php" method="post">
+        <!-- Botão para Relatório -->
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
+    </div>
+  </div>
 <!-- COMEÇO CONTEUDO -->
-  <table  id="tabelaCurso" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+  <table  id="tabelaUsuario" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
       <tr>
         <th scope="col">Nome</th>

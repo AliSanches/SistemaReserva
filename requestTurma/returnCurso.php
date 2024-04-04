@@ -28,8 +28,8 @@
             <td>$horaInicio</td>
             <td>$horaTermino</td>
             <td>$dataInicio</td>
-            <td><a  class='btnLaranja' href='turma_altera.php?id_turma=$idTurma>Editar</a></td>
-            <td><a class='btnLaranja' href='turma_exclui.php?id_turma=$idTurma>Excluir</a></td>
+            <td><a class='btnLaranja' href='turma_altera.php?id_turma=$idTurma'>Editar</a></td>
+            <td><a class='btnLaranja' href='turma_exclui.php?id_turma=$idTurma'>Excluir</a></td>
         </tr>";
     }
 ?>
