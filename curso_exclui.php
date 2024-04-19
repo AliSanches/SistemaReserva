@@ -1,6 +1,13 @@
 <?php 
-
     require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     $sqltipo = "SELECT * FROM tipo_curso";
     $resultadotipo = mysqli_query($conexao, $sqltipo);
@@ -60,7 +67,7 @@
         <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
             <div class="container">
                 <div class="logo d-flex justify-content-center">
-                    <a href="index.html">
+                    <a href="index.php">
                         <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                     </a>
                 </div>
@@ -79,7 +86,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -97,7 +104,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="login.php">Sair</a>
           </li>
         </ul>
     </div>

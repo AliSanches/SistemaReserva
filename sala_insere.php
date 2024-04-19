@@ -1,7 +1,14 @@
 <?php  
-
     date_default_timezone_set('America/Sao_Paulo');
     require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
         // SQL PARA CHAMAR O TIPO_SALA
         $sqlsala = "SELECT * FROM tipo_sala";
@@ -55,7 +62,7 @@
     <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
         <div class="container">
             <div class="logo d-flex justify-content-center">
-                <a href="index.html">
+                <a href="index.php">
                     <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                 </a>
             </div>
@@ -74,7 +81,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -92,7 +99,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="login.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -109,7 +116,7 @@
             <div class="d-flex justify-content-center mb-3">
                 <label for="tipoSala_insere" class="col-sm-4 col-form-label">Tipo da Sala</label>
                 <div class="col-sm-4 ">
-                    <select class="custom-select" id="tipo_de_sala" name="tipo_de_sala" aria-label="Exemplo de select com botão addon">
+                    <select class="custom-select" id="tipo_de_sala" name="tipo_de_sala">
                         <option selected>Selecione</option>
                             <?php do { ?>
                             <option value="<?php echo $linhasala['id_tipo_sala'] ?>"><?php echo $linhasala['nome_sala'] ?></option>
@@ -121,7 +128,7 @@
             <div class="d-flex justify-content-center mb-3">
                 <label for="caseSala_insere" class="col-sm-4 col-form-label">Case</label>
                 <div class="col-sm-4 ">
-                    <select class="custom-select" id="suporte_case" name="suporte_case" aria-label="Exemplo de select com botão addon">
+                    <select class="custom-select" id="suporte_case" name="suporte_case">
                         <option selected>Selecione</option>
                         <option value="sim">Sim</option>
                         <option value="nao">Não</option>

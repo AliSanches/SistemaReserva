@@ -1,6 +1,13 @@
 <?php
-
   require_once('./conexao/conecta.php');
+
+  session_start();
+  // print_r($_SESSION);
+
+  if($_SESSION['tipo'] == 'com')
+  {
+    header('Location: index.php');
+  }
 
   //Numero itens por página
   $itensPorPagina = 4;
@@ -11,18 +18,17 @@
   //Calcular o indice de inicio dos itens a serem exibidos na pagina atual
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
+  $sqlCurso = "SELECT nome_curso, id_curso FROM curso";
+  $resultCurso = mysqli_query($conexao, $sqlCurso);
+  $exibeCurso = mysqli_fetch_assoc($resultCurso);
+
   //Consulta SQL para obter os dados
-  $sqlConsulta = "SELECT turma.id_turma, sala.num_sala, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_reserva INNER JOIN turma ON turma.id_turma = reserva.id_turma LIMIT $indiceInicio, $itensPorPagina";
+  $sqlConsulta = "SELECT curso.nome_curso, turma.id_turma, sala.num_sala, turma.nome_turma, turma.id_turma, reserva.id_reserva, reserva.data_inicio, reserva.data_termino, reserva.hora_inicio, reserva.hora_termino FROM reserva INNER JOIN sala ON sala.id_sala = reserva.id_sala INNER JOIN turma ON turma.id_turma = reserva.id_turma INNER JOIN curso ON reserva.id_curso = curso.id_curso LIMIT $indiceInicio, $itensPorPagina";
   $resultConsulta = mysqli_query($conexao, $sqlConsulta);
   $exibeConsulta = mysqli_fetch_assoc($resultConsulta);
 
-  $sqlTurma = "SELECT nome_turma FROM turma";
-  $resultTurma = mysqli_query($conexao, $sqlTurma);
-  $exibeTurma = mysqli_fetch_assoc($resultSala);
-
-  $sqlSala = "SELECT num_sala FROM sala";
-  $resultSala = mysqli_query($conexao, $sqlSala);
-  $exibeSala = mysqli_fetch_assoc($resultSala);
+  // Contar o número total de registros
+  $totalRegistros = $conexao->query("SELECT COUNT(*) AS total FROM sala")->fetch_assoc()['total'];
 
 ?>
 <!doctype html>
@@ -48,6 +54,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="./css/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
   </head>
   <body>
 
@@ -56,7 +65,7 @@
   <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
         <div class="container">
             <div class="logo d-flex justify-content-center">
-                <a href="index.html">
+                <a href="index.php">
                     <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                 </a>
             </div>
@@ -75,7 +84,7 @@
   <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+        <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -93,7 +102,7 @@
         <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+        <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
       </li>
     </ul>
   </div>
@@ -103,13 +112,25 @@
 <!-- COMEÇO FILTRO SELECT -->
 <section class="container text-left">
   <h1 class="text-center mt-4 mb-3 tituloCadastro">Reserva</h1>
-              
+        
   <div class="row align-items-center">
+
+    <div class="col-lg-2 mb-3 mb-lg-0">
+      <select id="nomeCurso" class="form-select filtro">
+      <option>Curso</option>
+      <?php foreach($resultCurso as $exibir):?>
+        <option value="<?php echo $exibeCurso['id_curso']?>">
+          <?=$exibir['nome_curso']?>
+        </option>
+        <?php endforeach;?>
+      </select>
+    </div>
+
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="nomeTurma" class="form-select filtro">
       <option>Turma</option>
-      <?php foreach($resultTurma as $exibir):?>
-        <option value="<?php echo $exibeConsulta['id_turma'] ?>"><?php echo $exibeConsulta['nome_turma'] ?>
+      <?php foreach($resultConsulta as $exibir):?>
+        <option value="<?php echo $exibeConsulta['id_turma']?>">
           <?=$exibir['nome_turma']?>
         </option>
         <?php endforeach;?>
@@ -119,7 +140,7 @@
     <div class="col-lg-2 mb-3 mb-lg-0">
       <select id="numSala" class="form-select filtro">
       <option>Sala</option>
-      <?php foreach($resultSala as $exibir):?>
+      <?php foreach($resultConsulta as $exibir):?>
         <option>
           <?=$exibir['num_sala']?>
         </option>
@@ -131,16 +152,15 @@
       <input type="date" name="data" required class="form-control filtro">
     </div>
                 
-    <div class="col-lg-2 mb-3 mb-lg-0">
-      <input type="time" name="time" class="form-control filtro">
-    </div>
                 
     <div class="col-lg-2 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
       <!-- Botão para Relatório -->
-      <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-        <i class="fa-solid fa-file-pdf"></i>
-        <a type="button" class="text-dark">Relatorio</a>
-      </button>
+      <form action="./relatorioReserva/gerador-pdf.php" method="POST">
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
     </div>
   </div>
 </section>
@@ -148,9 +168,10 @@
 
 <!-- COMEÇO CONTEUDO -->
 <section class="principal container">
-  <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+  <table id="tabelaDados" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
       <tr>
+        <th scope="col">Curso</th>
         <th scope="col">Turma</th>
         <th scope="col">Sala</th>
         <th scope="col">Data Inicio</th>
@@ -161,18 +182,19 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <?php foreach($resultConsulta as $exibir):?>
+      <?php foreach($resultConsulta as $exibir):?>
+        <tr>
+        <td><?=$exibir['nome_curso']?></td>
         <td><?=$exibir['nome_turma']?></td>
         <td><?=$exibir['num_sala']?></td>
-        <td><?=$exibir['data_inicio']?></td>
-        <td><?=$exibir['data_termino']?></td>
+        <td><?=date('d/m/Y', strtotime($exibir['data_inicio']));?></td>
+        <td><?=date('d/m/Y', strtotime($exibir['data_termino']));?></td>
         <td><?=$exibir['hora_inicio']?></td>
         <td><?=$exibir['hora_termino']?></td>
-        <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva<?php $exibir['id_reserva']?>">Editar</a></td>
-        <td scope="col"><a class="btnLaranja" href="reserva_exclui.php?id_reserva<?php $exibir['id_reserva']?>">Excluir</a></td>
-        <?php endforeach;?>
+        <td scope="col"><a class="btnLaranja" href="reserva_altera.php?id_reserva=<?=$exibir['id_reserva']?>">Editar</a></td>
+        <td scope="col"><a class="btnLaranja" href="reserva_exclui.php?id_reserva=<?=$exibir['id_reserva']?>">Excluir</a></td>
       </tr>
+      <?php endforeach;?>
     </tbody>
   </table>
 
@@ -212,12 +234,7 @@
     </footer>
     <!-- FINAL RODAPÉ -->
 
-    <!-- Bootstrap 4.1 -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
 
-    <!-- Bootstrap 5.3 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>

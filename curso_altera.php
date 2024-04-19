@@ -1,11 +1,17 @@
 <?php 
-
     require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     $sqlselect = "SELECT * FROM tipo_curso";
     $resultadoselect = mysqli_query($conexao, $sqlselect);
     $linhaselect = mysqli_fetch_assoc($resultadoselect);
-
 
     if(isset($_GET['id_curso']) && $_GET['id_curso'] != ''){
 
@@ -14,7 +20,7 @@
         $sql = "SELECT * FROM curso WHERE id_curso = $id";
         $resultado = mysqli_query($conexao, $sql);
         $exibir = mysqli_fetch_assoc($resultado);
-      }
+    }
 
     if(isset($_POST['altera']) && $_POST['altera'] === 'curso_altera'){
 
@@ -62,7 +68,7 @@
         <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
             <div class="container">
                 <div class="logo d-flex justify-content-center">
-                    <a href="index.html">
+                    <a href="index.php">
                         <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                     </a>
                 </div>
@@ -81,7 +87,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -99,7 +105,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="login.php">Sair</a>
           </li>
         </ul>
     </div>

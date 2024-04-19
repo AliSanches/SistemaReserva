@@ -1,6 +1,13 @@
 <?php 
+    require_once('././conexao/conecta.php');
 
-    require_once('./conexao/conecta.php');
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
 
     $sqlSala = "SELECT id_sala, num_sala FROM sala";
     $resultadoSala = mysqli_query($conexao, $sqlSala);
@@ -20,7 +27,7 @@
     $exibePag = mysqli_fetch_assoc($resultadoPag);
 
     // Consultas para pesquisa
-    $sqlPesquisa = "SELECT tipo_curso.nome_tipo FROM tipo_curso";
+    $sqlPesquisa = "SELECT tipo_curso.id_tipo_curso, tipo_curso.nome_tipo FROM tipo_curso";
     $resultPesquisa = mysqli_query($conexao, $sqlPesquisa);
     $exibePesquisa = mysqli_fetch_assoc($resultPesquisa);
 
@@ -48,6 +55,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="./css/style.css">
+
+    <script src="./js/refreshSala.js" defer></script>
+    <script src="./js/jquery.js" defer></script>
   </head>
   <body>
 
@@ -56,7 +66,7 @@
     <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
           <div class="container">
               <div class="logo d-flex justify-content-center">
-                  <a href="index.html">
+                  <a href="index.php">
                       <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                   </a>
               </div>
@@ -75,7 +85,7 @@
   <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+        <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -93,7 +103,7 @@
         <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+        <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
       </li>
     </ul>
   </div>
@@ -107,19 +117,17 @@
   <div class="row align-items-center">
 
     <div class="col-lg-3 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Tipo do Curso</option>
-        <?php foreach($resultPesquisa as $exibir):?>
-        <option>
-          <?=$exibir['nome_tipo']?>
-        </option>
+      <select id="selectSala" class="form-select filtro">
+        <option selected value="valorPadrao">Número da Sala</option>
+        <?php foreach($resultadoPag as $exibir):?>
+        <option value="<?php echo $exibir['id_sala']?>"><?=$exibir['num_sala']?></option>
         <?php endforeach;?>
       </select>
     </div>
               
     <div class="col-lg-3 mb-3 mb-lg-0">
       <select id="reserva" class="form-select filtro">
-        <option selected>Capacidade</option>
+        <option selected>Capacidade Alunos</option>
         <?php foreach($resultadoPag as $exibir):?>
         <option>
           <?=$exibir['capacidade']?>
@@ -128,44 +136,34 @@
       </select>
     </div>
               
-    <div class="col-lg-3 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Número da Sala</option>
-        <?php foreach($resultadoSala as $exibir):?>
-        <option>
-        <?=$exibir['num_sala']?>
-        </option>
-        <?php endforeach;?>
-      </select>
-    </div>
-              
     <div class="col-lg-3 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
-      <!-- Botão para Relatório -->
-      <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-        <i class="fa-solid fa-file-pdf"></i>
-        <a type="button" class="text-dark">Relatorio</a>
-      </button>
+      <form action="./relatorioSala/gerador-pdf.php" method="post">
+        <!-- Botão para Relatório -->
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
     </div>
   </div>
 <!-- FILTRO FILTRO SELECT -->
 
   
 <!-- COMEÇO CONTEUDO -->
-
-  <table class="table w-100 table-responsive-sm conteudo mt-2 mb-2 text-center">
+  <table id="tabelaSala" class="table w-100 table-responsive-sm conteudo mt-2 mb-2 text-center">
     <thead>
       <tr>
         <th scope="col">Tipo da Sala</th>
         <th scope="col">Sala</th>
-        <th scope="col">Capacidade</th>
+        <th scope="col">Capacidade Alunos</th>
         <th scope="col">Case</th>
         <th scope="col">Comporta Notebook</th>
         <th colspan="2" scope="col" class="text-center"><a class="btnLaranja" href="sala_insere.php">Inserir</a></th>
       </tr>
     </thead>
       <tbody>
+        <?php foreach($resultadoPag as $exibir):?>
           <tr>
-          <?php foreach($resultadoPag as $exibir):?>
             <td><?=$exibir['nome_sala'] ?></td>
             <td><?=$exibir['num_sala'] ?></td>
             <td><?=$exibir['capacidade'] ?></td>

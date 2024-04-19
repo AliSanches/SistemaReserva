@@ -1,6 +1,13 @@
 <?php 
-
   require_once('./conexao/conecta.php');
+
+  session_start();
+  // print_r($_SESSION);
+
+  if($_SESSION['tipo'] == 'com')
+  {
+    header('Location: index.php');
+  }
 
   //Numero itens por página
   $itensPorPagina = 4;
@@ -12,9 +19,12 @@
   $indiceInicio = ($paginaAtual - 1) * $itensPorPagina;
 
   //Consulta SQL para obter os dados
-  $sql = "SELECT turma.nome_turma, turma.codigo_Oferta, turma.horario_inicio, turma.horario_termino, turma.data_inicio, turma.id_turma, curso.nome_curso FROM turma INNER JOIN curso ON curso.id_curso = turma.id_curso LIMIT $indiceInicio, $itensPorPagina";
+  $sql = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso ORDER BY curso.nome_curso LIMIT $indiceInicio, $itensPorPagina";
   $result = mysqli_query($conexao, $sql);
   $row = mysqli_fetch_assoc($result);
+
+  $sqlConsulta = "SELECT curso.nome_curso, curso.id_curso, turma.id_turma, turma.nome_turma, turma.horario_inicio, turma.horario_termino, turma.data_inicio FROM curso INNER JOIN turma ON curso.id_curso = turma.id_curso";
+  $resultConsulta = mysqli_query($conexao, $sqlConsulta);
 
   // Contar o número total de registros
   $totalRegistros = $conexao->query("SELECT COUNT(*) AS total FROM turma")->fetch_assoc()['total'];
@@ -22,7 +32,6 @@
   $sqlTipo = "SELECT nome_tipo FROM tipo_curso";
   $resultTipo = mysqli_query($conexao, $sqlTipo);
   $exibeTipo = mysqli_fetch_assoc($resultTipo);
- 
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -43,6 +52,9 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <script src="./js/refreshTurma.js" defer></script>
+    <script src="./js/jquery.js" defer></script>
+
     <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
@@ -52,7 +64,7 @@
     <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
           <div class="container">
               <div class="logo d-flex justify-content-center">
-                  <a href="index.html">
+                  <a href="index.php">
                       <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                   </a>
               </div>
@@ -71,7 +83,7 @@
   <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
     <ul class="navbar-nav">
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+        <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -89,7 +101,7 @@
         <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+        <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
       </li>
   </div>
 </nav>
@@ -102,43 +114,41 @@
   <div class="row align-items-center">
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Nome da turma</option>
-        <?php foreach($result as $exibirNome):?>
-          <option><?=$exibirNome['nome_curso']?></option>
+      <select id="selectCurso" class="form-select filtro">
+        <option value="valorPadrao">Nome do Curso</option>
+        <?php foreach($resultConsulta as $exibir):?>
+          <option value="<?php echo $exibir['id_curso']?>" ><?=$exibir['nome_curso']?></option>
         <?php endforeach;?>
       </select>
     </div>
                 
     <div class="col-lg-4 mb-3 mb-lg-0">
-      <select id="reserva" class="form-select filtro">
-        <option selected>Selecionar por curso</option>
-        <?php foreach($resultTipo as $executa):?>
-          <option><?=$executa['nome_tipo']?></option>
+      <select id="selectTurma" class="form-select filtro">
+        <option value="valorPadraoTurma">Turmas</option>
+        <?php foreach($result as $executa):?>
+          <option value="<?php echo $executa['id_turma']?>"><?=$executa['nome_turma']?> </option>
         <?php endforeach;?>
       </select>
     </div>
                 
-    <div class="col-lg-2 mb-3 mb-lg-0">
-      <input type="time" name="time" class="form-control filtro">
-    </div>
-                
     <div class="col-lg-2 mb-3 mb-lg-0 d-flex justify-content-center justify-content-lg-end">
-      <!-- Botão para Relatório -->
-      <button type="button" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
-        <i class="fa-solid fa-file-pdf"></i>
-        <a type="button" class="text-dark">Relatorio</a>
-      </button>
+      <form action="./relatorioTurma/gerador-pdf.php" method="post">
+        <!-- Botão para Relatório -->
+        <button type="submit" class="btn btn-outline-dark py-1 btn-lg m-0 editEsp">
+          <i class="fa-solid fa-file-pdf"></i>
+          <a type="button" class="text-dark">Relatorio</a>
+        </button>
+      </form>
     </div>
   </div>
   <!-- FILTRO FILTRO SELECT -->
     
   <!-- COMEÇO CONTEUDO -->
-  <table class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
+  <table id="tabelaTurma" class="table w-100 table-responsive-sm conteudo mt-3 mb-3 text-center">
     <thead>
         <tr>
-            <th scope="col">Curso</th>
-            <th scope="col">Nome da Turma</th>
+            <th scope="col">Nome do Curso</th>
+            <th scope="col">Número da Turma</th>
             <th scope="col">Horario Inicio</th>
             <th scope="col">Horario Final</th>
             <th scope="col">Data Inicio</th>
@@ -152,7 +162,7 @@
               <td><?=$dados['nome_turma'] ?></td>
               <td><?=$dados['horario_inicio'] ?></td>
               <td><?=$dados['horario_termino'] ?></td>
-              <td><?=$dados['data_inicio'] ?></td>
+              <td><?=date('d/m/Y', strtotime($dados['data_inicio'])); ?></td>
               <td><a  class="btnLaranja" href="turma_altera.php?id_turma=<?= $dados['id_turma'] ?>">Editar</a></td>
               <td><a class="btnLaranja" href="turma_exclui.php?id_turma=<?= $dados['id_turma'] ?>">Excluir</a></td>
             </tr>
@@ -160,7 +170,7 @@
         </tbody>
   </table>
 
-  <!-- PAGINAÇÃO -->
+<!-- PAGINAÇÃO -->
   <section class="navegacao mt-3">
     <nav aria-label="Navegação de paginas">
       <ul class="pagination d-flex justify-content-center">

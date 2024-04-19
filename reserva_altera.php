@@ -1,9 +1,61 @@
+<?php
+    require_once('./conexao/conecta.php');
+
+    session_start();
+    // print_r($_SESSION);
+  
+    if($_SESSION['tipo'] == 'com')
+    {
+      header('Location: index.php');
+    }
+
+    $sqlCurso = "SELECT nome_curso, id_curso FROM curso";
+    $resultadoCurso = mysqli_query($conexao, $sqlCurso);
+    $exibirCurso = mysqli_fetch_assoc($resultadoCurso);
+
+    $sqlTurma = "SELECT nome_turma, id_turma FROM turma";
+    $resultadoTurma = mysqli_query($conexao, $sqlTurma);
+    $exibirTurma = mysqli_fetch_assoc($resultadoTurma);
+
+    $sqlSala = "SELECT num_sala, id_sala FROM sala";
+    $resultadoSala = mysqli_query($conexao, $sqlSala);
+    $exibirSala = mysqli_fetch_assoc($resultadoSala);
+
+    if(isset($_GET['id_reserva'])) {
+
+        $id = $_GET['id_reserva'];
+    
+        $sql = "SELECT * FROM reserva WHERE id_reserva = $id";
+        $resultado = mysqli_query($conexao, $sql);
+        $exibir = mysqli_fetch_assoc($resultado);
+    }
+
+    if(isset($_POST['alterar']) && $_POST['alterar'] === 'inserir_alteracao') {
+
+        $idReserva = $_POST['id_reserva'];
+        $id_curso = mysqli_real_escape_string($conexao, $_POST['id_curso']);
+        $id_turma = mysqli_real_escape_string($conexao, $_POST['id_turma']);
+        $id_sala = mysqli_real_escape_string($conexao, $_POST['id_sala']);
+
+        $dataInicio = mysqli_real_escape_string($conexao, $_POST['data_inicio']);
+        $dataTermino = mysqli_real_escape_string($conexao, $_POST['data_termino']);
+        $horaInicio = mysqli_real_escape_string($conexao, $_POST['hora_inicio']);
+        $horaTermino = mysqli_real_escape_string($conexao, $_POST['hora_termino']);
+
+        $sql = "UPDATE reserva SET data_inicio = '$dataInicio', data_termino = '$dataTermino', hora_inicio = '$horaInicio', hora_termino = '$horaTermino', id_curso = '$id_curso', id_turma = '$id_turma', id_sala = '$id_sala' WHERE id_reserva = '$idReserva'";
+
+        if(mysqli_query($conexao, $sql)) {
+            header('Location:reserva.php');
+        }
+    }
+?>
+
 <!doctype html>
 <html lang="pt-br">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Edição de reserva</title>
+    <title>Alterar Reserva</title>
     
     <!-- Font awesome -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -17,6 +69,8 @@
     <!-- Bootstrap 4.0 -->
     <link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"/>
 
+    <script src="./js/jquery.js" defer></script>
+
     <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
@@ -26,7 +80,7 @@
     <div class="jumbotron jumbotron-fluid bg-white p-0 mt-5">
             <div class="container">
                 <div class="logo d-flex justify-content-center">
-                    <a href="index.html">
+                    <a href="index.php">
                         <img src="./imagens/Senac_logo.svg.png" alt="Logo-Senac">
                     </a>
                 </div>
@@ -45,7 +99,7 @@
     <div class="collapse navbar-collapse justify-content-md-center" id="barranavegacao">
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
-                <a class="nav-link mr-4 linkmenu" href="index.html">Home</a>
+                <a class="nav-link mr-4 linkmenu" href="index.php">Home</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link mr-4 linkmenu" href="curso.php">Curso</a>
@@ -63,7 +117,7 @@
             <a class="nav-link mr-4 linkmenu" href="usuario.php">Usuário</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link mr-4 linkmenu" href="login.html">Sair</a>
+            <a class="nav-link mr-4 linkmenu" href="sair.php">Sair</a>
           </li>
         </ul>
     </div>
@@ -73,132 +127,79 @@
 <!-- COMEÇO CONTEUDO -->
 <section class="principal container fs-18">
         <div class="row justify-content-center">
-            <h1 class="text-center mt-3 mb-5 tituloCadastro">Edição de reserva</h1>
+            <h1 class="text-center mt-3 mb-5 tituloCadastro">Alterar Reserva</h1>
 
             <form class="col-lg-8" method="POST">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                            <label for="curso_insere">Turma</label>
-                            <select id="curso_insere" class="form-select">
-                                <option selected>Escolher...</option>
-                                <option>...</option>
+                        <label for="curso">Curso</label>
+                            <select class="form-select" id="cursoSelect" name="id_curso">
+
+                                <?php do { ?>
+
+                                    <option value="<?php echo $exibirCurso['id_curso']?>" <?php if($exibirCurso['id_curso'] == $exibir['id_curso'] ) echo "selected" ?>><?=$exibirCurso['nome_curso'] ?></option>
+
+                                <?php } while($exibirCurso = mysqli_fetch_assoc($resultadoCurso)) ?>
+
                             </select>
                     </div>
                     <div class="form-group col-md-5">
-                        <label for="nomeTurma_insere">Sala</label>
-                        <select id="curso_insere" class="form-select">
-                            <option selected>Escolher...</option>
-                            <option>...</option>
-                        </select>
+                        <label for="turma">Turma</label>
+                            <select id="turmaSelect" class="form-select" name="id_turma" disabled>
+
+                            <?php do { ?>
+
+                                <option value="<?php echo $exibirTurma['id_turma']?>" <?php if($exibirTurma['id_turma'] == $exibir['id_turma'] ) echo "selected" ?>><?=$exibirTurma['nome_turma'] ?></option>
+
+                            <?php } while($exibirTurma = mysqli_fetch_assoc($resultadoTurma)) ?>
+
+                            </select>
                     </div>
                     
                     <div class="form-group col-md-3">
-                        <label for="codOferta_insere">Curso</label>
-                        <select id="curso_insere" class="form-select">
-                            <option selected>Escolher...</option>
-                            <option>...</option>
-                        </select>
-                    </div>
-                </div>
+                        <label for="salaSelect">Sala</label>
+                            <select id="salaSelect" class="form-select" name="id_sala">
+                                
+                            <?php do { ?>
 
-                <div class="form-row">
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Segunda-Feira
-                        </label>
-                        <input type="checkbox">
-                    </div>
+                                <option value="<?php echo $exibirSala['id_sala']?>" <?php if($exibirSala['id_sala'] == $exibir['id_sala'] ) echo "selected" ?>><?=$exibirSala['num_sala'] ?></option>
 
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Terça-Feira
-                        </label>
-                        <input type="checkbox">
-                    </div>
+                            <?php } while($exibirSala = mysqli_fetch_assoc($resultadoSala)) ?>
 
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Quarta-Feira
-                        </label>
-                        <input type="checkbox">
-                    </div>
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Quinta-Feira
-                        </label>
-                        <input type="checkbox">
-                    </div>
-
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Sexta-Feira
-                        </label>
-                        <input type="checkbox">
-                    </div>
-
-                    <div class="form-check col-md-2">
-                        <label class=" small " for="disabledFieldsetCheck">
-                            Sábado
-                        </label>
-                        <input type="checkbox">
+                            </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-6">
-                        <label for="dataInicio_insere" class="d-flex">Data Início</label>
-                        <input type="date" class="form-control" id="data_inicio">
+                        <label for="data_inicio" class="d-flex">Data Início</label>
+                        <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="<?php echo $exibir['data_inicio']?>">
                     </div>
 
                     <div class="col-6">
                         <label for="hora_inicio" class="d-flex mt-0">Hora Início</label>
-                        <input type="time" class="mt-0 centro form-control" id="horaInicio_insere">
+                        <input type="time" class="mt-0 centro form-control" id="hora_inicio" name="hora_inicio" value="<?php echo $exibir['hora_inicio']?>">
                     </div>
 
                     <div class="col-6 mt-3">
                         <label for="data_termino" class="d-flex">Data Término</label>
-                        <input type="date" class="form-control" id="dataTermino_insere">
+                        <input type="date" class="form-control" id="data_termino" name="data_termino" value="<?php echo $exibir['data_termino']?>">
                     </div>
 
                     <div class="col-6">
                         <label for="hora_termino" class="d-flex mt-3">Hora Término</label>
-                        <input type="time" class="mt-2 centro form-control" id="horaTermino_insere">
+                        <input type="time" class="mt-2 centro form-control" id="hora_termino" name="hora_termino" value="<?php echo $exibir['hora_termino']?>">
                     </div>
                 </div>
                
                 <div class="d-flex justify-content-center mt-5 mb-3">
-                     <!-- Botão para acionar modal -->
-                     <button type="button" class="btn botaoLaranja btn-lg mr-5" data-toggle="modal" data-target="#Modalturma">
+                    <input type="hidden" name="id_reserva" value="<?=$exibir['id_reserva']?>">
+                    <button type="submit" name="alterar" value="inserir_alteracao" class="btn botaoLaranja btn-lg mr-5">
                         Editar
                     </button>
 
                     <!-- Botão para voltar a home -->
                     <a href="reserva.php" class="btn botaoCinza btn-lg">Voltar</a>
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="Modalturma" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="TituloModalCentralizado"> 
-                                        <i class="fa-regular fa-circle-check"></i>
-                                        Editar
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-
-                                <div class="modal-body my-5 text-center">
-                                    Edição concluida com sucesso
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-                                    <button type="submit" class="btn botaoLaranja px-5" data-dismiss="modal">OK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </form>
         </div>
